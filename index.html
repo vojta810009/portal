@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>IngLAND – ePortál občana</title>
+  <link rel="stylesheet" href="styl.css">
+  <link rel="stylesheet" href="style-portal.css">
+  <style>
+    .login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .login-container input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .login-container button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .login-container button:hover {
+      background: #0056b3;
+    }
+    body {
+      background-color: #dbe7f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="ingland-male.png" alt="logo" width="100" />
+    <h2>Přihlášení do ePortálu občana</h2>
+    <form id="loginForm">
+      <input type="text" id="citizenId" placeholder="ID občana" required><br>
+      <input type="password" id="password" placeholder="Heslo" required><br>
+      <button type="submit">Přihlásit se</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const id = document.getElementById("citizenId").value;
+      const pass = document.getElementById("password").value;
+      const entry = { id: id, pass: pass, time: new Date().toISOString() };
+      let log = JSON.parse(localStorage.getItem("loginLog")) || [];
+      log.push(entry);
+      localStorage.setItem("loginLog", JSON.stringify(log));
+      alert("Přihlášení uloženo.");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,677 @@
+/* CSS Document */
+body{
+  color: #000000;
+  font-family: Calibri;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  text-align: center;
+  background-color: #e2ecff;
+}
+
+.chat_box .zpravy {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ababab;
+}
+
+.lista {
+top: 0;
+left: 0;
+width: 100%;
+height: 40px;
+min-width: 600px;
+color: #fff;
+z-index: 99999;
+background-color: #417bb2;
+position: fixed;
+}
+
+.lista_position{
+ float: right;
+ height: 40px;
+ top: 0;
+ left: 0;
+ position: relative;
+}
+
+.umisteni {
+    padding-top: 40px;
+}
+
+.menu {
+ color: #000000;
+ display: block;
+ }
+ 
+ .aktual{
+ margin-left: 0px; 
+ }
+  
+.menu ul {
+ margin-top: 0;
+ position: absolute;
+ padding: 0;
+ list-style-type: none;
+ z-index: 1000;
+ }
+ 
+ .zobrazit{
+  background-color: #846FAE;
+ }
+
+.menu ul li:hover a {
+ /* border-bottom: 3px solid #591577; */
+ }
+ 
+
+ 
+.menu ul li a {
+ width: 157px;
+ padding-right: 7px;
+ padding-left: 7px;
+ padding-top: 5px;
+ padding-bottom: 3px;
+ border-bottom: 3px solid #846FAE;
+ font-family: "Open Sans",sans-serif;
+ text-align: left;
+ color: #fff;
+ display: block;
+ text-decoration: none;
+ background-color: #846FAE;
+ border-radius: 0;
+ }
+ 
+.menu div div a:hover {
+ background-color: #0030a2;
+ }
+  
+.menu li a {
+ font-size: 15px;
+ font-family: "Open Sans",sans-serif;
+ }
+        
+
+.menu ul ul a:hover {
+ color: #4f4f4f; 
+ background-color: rgb(233,233,233);
+ }
+
+ .menu li:hover ul{
+  visibility: visible;
+ }
+ 
+  .menu li:hover .nadrazena a{
+  border-bottom: 3px solid #24003F;
+ }
+
+  .menu li .nadrazena a{
+ }
+
+  .menu li .nadrazena_aktivni a{
+  background-color: #2b7db5;
+ }
+ 
+ .menu .sipka1{
+width: 0;
+height: 0;
+margin-top: -22px;
+margin-left: 148px;
+position: absolute;
+border-style: solid;
+border-width: 13.5px 15.2px 13.5px 0;
+border-color: transparent #e4e4e4 transparent transparent;
+ }
+ 
+ .menu .sipka2{
+width: 0;
+margin-left: 162px;
+position: absolute;
+margin-top: -23px;
+height: 0;
+border-style: solid;
+border-width: 14.5px 0 14.5px 15.2px;
+border-color: transparent transparent transparent #5a1577; 
+ }
+
+ .menu li ul{
+  visibility: hidden;
+ }
+ 
+.menu li li {
+ float: none;
+ border: none;
+ padding: 0;
+ margin: 0;
+ display: block;
+ }
+
+ 
+ .box_nastaveni .hledani tr, .box_nastaveni .hledani td{
+  padding: 0px;
+ } 
+ 
+.info {
+    width: max-content;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 7px;
+    padding-bottom: 4px;
+    background-color: #0072c1;
+}
+ 
+ .nerozbalen{
+ cursor: pointer;
+ } 
+ 
+ 
+  .info-box{
+  margin-top:10px;  
+  display: none;
+ }
+ 
+ 
+   .info:hover .info-box{
+   display: block;
+  }
+    .info:hover{
+    background-color: #846FAE;
+    }
+  
+   .submit{
+background-color: rgba(99, 0, 174, 1);
+border: 2px solid #330059;
+width: 100%;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+padding-top: 5px;
+color: #fff;
+padding-bottom: 5px;
+cursor: pointer;    
+   }
+   
+  .strana{
+    padding: 30px;
+ }
+ 
+   .closed .objekt{
+  display: none;
+  }  
+  
+  .box_nastaveni .sipka{
+width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 7px 12.4px 7px;
+border-color: transparent transparent #2b2b2b transparent;
+line-height: 0px;
+_border-color: #000000 #000000 #2b2b2b #000000;
+_filter: progid:DXImageTransform.Microsoft.Chroma(color='#000000');
+float: right;
+margin-top: 5px;
+  }  
+  
+  .closed .sipka{
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10.4px 6px 0 6px;
+  border-color: #2b2b2b transparent transparent transparent;
+  line-height: 0px;
+  _border-color: #2b2b2b #000000 #000000 #000000;
+  _filter: progid:DXImageTransform.Microsoft.Chroma(color='#000000');  
+  }   
+  
+ .box_nastaveni {
+  margin: 10px 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  border: 2px solid #b2b2b2;  
+  background: #fff;      
+  display: block;    
+}
+
+ .reorder-dragged{
+  width: 80%;
+ }
+
+.box_nastaveni table{
+margin: 10px 0;    
+}
+
+
+.box_nastaveni h2{
+background: #fff;
+font: small-caption;
+cursor: pointer;
+color: #000;
+font-size: 20px;
+font-weight: normal;
+padding: 7px 10px;
+border-bottom-color: #dfdfdf;
+margin: 0;
+line-height: 1;
+border-bottom-width: 1px;
+border-bottom-style: solid;
+-webkit-user-select: none;
+-moz-user-select: none;
+text-align: left;
+}
+
+.box_nastaveni table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.box_nastaveni table tr td{
+padding-left: 5px;
+padding-right: 5px;
+padding-top: 20px;
+}
+
+.nazev_strany{
+font: small-caption;
+font-size: 25px;
+margin-top: 20px;
+}
+
+.napoveda {
+padding-left: 5px;
+padding-right: 3px;
+width: 10px;
+color: white;
+border-radius: 5px;
+background-color: #001CB8;
+position: relative;
+}
+
+.bublina{
+display: none;
+margin-left: -20px;
+border: 1px solid #0063FF;
+position: absolute;
+margin-top: 31px;
+background-color: #00C4FF;
+width: 350px;
+padding: 4px;
+z-index: 4;
+}
+
+.spicka{
+position: absolute;
+margin-top: -20px;
+margin-left: 13px;
+width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 10px 17.3px 10px;
+border-color: transparent transparent #00c4ff transparent;
+}
+
+.box:hover .bublina{
+ display: block;
+}
+
+
+ .aktivni{
+ visibility: visible;
+ }
+ 
+ .nadrazena_aktivni{
+ }
+ 
+ .volne_pole{
+  min-height: 150px;
+  height: 100%;  
+  border: 2px dashed #888;
+ }
+ 
+ .uvod table tr td{
+  margin: 8px 8px;
+  min-height: 250px;
+ }
+ 
+ .pole{
+  width: 100%;
+  height: 100%; 
+ }
+ 
+ .ok{
+  background-color: #EFEFEF;
+padding: 5px;
+margin: 15px;
+border: 1px solid #B3B3B3;
+border-left: 3px solid rgb(0, 130, 0);
+ }
+ 
+  .chyba{
+  background-color: #EFEFEF;
+padding: 5px;
+margin: 15px;
+border: 1px solid #B3B3B3;
+border-left: 3px solid rgb(255, 0, 0);
+ }
+
+.box_nastaveni .hledani tr, .box_nastaveni .hledani td {
+    padding: 2px 6px;
+}
+
+.bublina p {
+    margin: 0;
+}
+
+input[type="text"] {
+    width: 315px;
+}
+ 
+ .pozadi_pruhledne{
+ position: fixed;
+width: 100%;
+height: 100%;
+top: 0;
+left: 0;
+z-index: 9999;
+background-color: rgba(0, 0, 0, 0.5);
+ }
+ 
+ .pozadi_pruhledne .box_nastaveni{
+ width: 800px;
+ margin-top: 80px;
+ height: auto;
+ margin-left: auto;
+ margin-right: auto;
+ }
+ 
+ .defaultSkin table.mceToolbar{
+  width: auto;
+ }
+ 
+ /* MENU TEST */
+ 
+.menu-main {
+    /* vertical-align: middle; */
+    /* display: block; */
+    margin-top: 25px;
+    /* float: right; */
+}
+/*
+.menu-main ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+} */
+
+.menu-main ul li {
+    vertical-align: middle;
+    margin: 2px 5px;
+}
+
+.menu-main li {
+    display: inline-block;
+}
+
+.menu-main ul li a.main_link {
+    display: block;
+    padding: 10px 23px;
+    width: 130px;
+    background-color: #fff;
+    text-align: center;
+    border: 1px solid;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+    outline: none;
+    border-top: 4px solid;
+    box-sizing: unset;
+}
+
+.page_small{
+    width: 70%;
+}
+
+.menu-main ul li a.podpolozka, .menu-main ul li a.podpolozka_aktivni {
+    display: block;
+    width: 123px;
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 6px 19px;
+    border-width: 4px 1px 1px;
+    text-decoration: none;
+    outline: none;
+    border-top: 4px solid;
+    border-color: #878787;
+    color: #5e5e5e;
+    box-sizing: unset;
+    border-radius: 5px;
+}
+
+.menu-main ul li a.podpolozka:hover {
+    background-color: #dadada;
+}
+
+.menu-main ul li a.podpolozka_aktivni{
+    background-color: #2b91cb;
+    color: #fff;
+    border-color: #00507e;
+}
+
+
+
+/*------------ VÄ‚â€žÄąË‡DA -----------*/
+
+.menu-main ul li.polozka a.main_link,  .menu-main ul li a.podpolozka {
+    border-color: #2b91cb;
+    color: #2b91cb;
+}
+
+.menu-main li.polozka ul.menu li a:hover, .menu-main li.veda ul.menu li .subpolozka_aktivni {
+    background-color: #2b91cb;
+}
+
+.menu-main li.polozka:hover a.main_link, .menu-main li.polozka.its_active a.main_link {
+    background-color: #2b91cb;
+    color: #fff !important;
+    border-color: #00507e !important;
+}
+
+.menu-main li.polozka ul.menu {
+    border-color: #00507e; 
+} 
+
+.menu-main li.polozka ul.menu:before {
+    border-bottom-color: #00507e; 
+} 
+
+
+
+/*-----------------------*/
+
+.menu-main .menu {
+    position: absolute;
+    margin-left: -2px;
+    z-index: 1000;
+    padding: 5px;
+    width: 181px;
+    border: 1px solid #748c34;
+    background-color: #ffffff;
+}
+
+.menu-main div{
+    padding-top: 9px;
+}
+
+.menu-main .menu:before {
+    content: "";
+    border: 8px solid transparent;
+    width: 0px;
+    height: 0px;
+    display: inline-block;
+    position: absolute;
+    border-bottom: 10px solid #748c34;
+    top: -18px;
+    left: 0;
+    margin-left: 46%;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.menu-main li ul.menu li a {
+    padding: 7px;
+    margin-bottom: 0px;
+    font-size: 70%;
+    margin-top: 0px;
+    color: #4f4c49;
+    margin-left: 0px;
+    display: block;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-right: 0px;
+    text-align: center;
+}
+
+
+.menu-main ul li:hover ul.menu {
+    visibility: visible;
+    -webkit-animation: fadeInDown 300ms;
+    -moz-animation: fadeInDown 300ms;
+    -ms-animation: fadeInDown 300ms;
+    -o-animation: fadeInDown 300ms;
+    animation: fadeInDown 300ms;
+    opacity: 1;
+}
+
+.menu-main li ul.menu {
+    visibility: hidden;
+}
+
+.menu-main li ul.menu li a:hover, .menu-main li ul.menu li.current-menu-item a {
+    color: #fff;
+}
+
+.menu-main .menu-main h1{
+    display: none;
+}
+
+.menu-main li ul.menu li {
+    margin: 0;
+    width: 100%;
+}
+
+/* -------------------------------------- */
+
+.horni_menu {
+    float: left;
+    margin-top: 5px;
+}
+
+.horni_menu div{
+    background-color: #fff;
+    padding-bottom: 0px;
+}
+
+.horni_menu ul {
+    display: table;
+    width: 1025px;
+    margin: 0;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+.horni_menu li {
+    display: table-cell;
+    padding-left: 5px;
+    padding-right: 5px;
+    top: -4px;
+    position: relative;
+}
+
+.horni_menu .current-menu-item a {
+    background-color: #e1e1e1;
+}
+
+.horni_menu a {
+    border-top: 4px solid #4b4946;
+    padding-bottom: 8px;
+    padding-top: 10px;
+    font-size: 77%;
+    display: block;
+    color: #4b4946;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.horni_menu a:hover {
+    color: #fff;
+    background-color: #4b4946;
+} 
+ 
+ /* MENU TEST KONEC */
+ 
+ .box_nastaveni table .table_databaze{
+ width: auto;
+ }
+ 
+ .box_nastaveni table .table_databaze td{
+ padding-top: 0;
+ }
+ 
+ .KIng {
+    font-size: 120%;
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #2b91cb;
+    width: max-content;
+    padding: 5px 16px;
+    border-radius: 4px;
+}
+
+.KIng input[type="number"] {
+    border-radius: 4px;
+    padding: 5px;
+    border: 0px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.col-sm-12.col-md-6 {
+    text-align: right;
+}
+
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: left;
+}
+
+.objekt {
+    padding: 30px;
+}
+
+input[type="submit"] {
+    border: 1px solid #042da2;
+    border-radius: 5px;
+    padding: 5px 12px;
+    margin-top: 5px;
+    font-weight: 700;
+    background: #ffffff;
+    background-image: none;
+    color: #042da2;
+    text-shadow: none;
+    cursor: pointer;}
+
+input[type="submit"]:hover {
+    color: #ffffff;
+    background-color: #042da2;
+}

@@ -1,0 +1,343 @@
+body{
+  color: #000000;
+  font-family: Calibri;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  text-align: center;
+  background-color: #c0b8b8;
+}
+
+.lista {
+top: 0;
+left: 0;
+width: 100%;
+height: 40px;
+min-width: 600px;
+color: #fff;
+z-index: 99999;
+background-color: #523f6d;
+position: fixed;
+}
+
+a:hover {
+color: #6D00EB;
+}
+
+.umisteni{  
+  text-align: center;
+  left: 50%;
+  position: absolute;   
+}
+
+.umisteni .center{
+  position: absolute;
+  width: 800px;
+  overflow: hidden;
+  left: -350px;
+}
+
+.umisteni .telo{
+padding: 5px 5px 5px 5px;
+margin-top: 40px;
+width: 735px;
+min-height: 400px;
+}
+
+input, textarea{
+  background-color: #7FFFD4;
+  border: 2px solid #1E90FF;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  color: #00008B;
+  font-weight: 900;
+}
+
+.napoveda {
+padding-left: 5px;
+padding-right: 3px;
+width: 10px;
+color: white;
+border-radius: 5px;
+background-color: #001CB8;
+position: relative;
+}
+
+.bublina{
+display: none;
+margin-left: -20px;
+border: 1px solid #0063FF;
+position: absolute;
+margin-top: 31px;
+background-color: #00C4FF;
+padding: 4px;
+}
+
+.spicka{
+position: absolute;
+margin-top: -20px;
+margin-left: 13px;
+width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 10px 17.3px 10px;
+border-color: transparent transparent #00c4ff transparent;
+}
+
+.box:hover .bublina{
+ display: block;
+}
+
+.input{
+margin-left: 33px;
+margin-right: 33px;
+margin-top: 15px;
+cursor: pointer;
+height: 36px;
+background-image: url('./vzhled/tlacitko.png');
+background-size: 149px;
+box-shadow: 0px 0px 19px #FFF;
+border: 2px solid #FFFFFF;
+background-color: rgb(110, 36, 164);
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+color: #ffffff;
+padding-top: 7px;
+/* padding-bottom: 15px; */
+border-radius: 10px;      
+}
+
+.input:hover{
+background-image: url('./vzhled/tlacitko-hover.png');
+}
+
+
+.clanek_plny .zprava{
+  padding-bottom: 30px;
+  background-color: #1F1F1F;
+}
+
+.clanek_plny .datum{
+  position: absolute;
+  left: 5px;
+  bottom: 2px;
+}
+
+.clanek_plny .nick{
+  position: absolute;
+  right: 5px;
+  bottom: 2px;
+}
+
+.soukromy_chat{
+border: 2px solid #999;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+font-weight: 900;
+background: #f3f3f3;
+background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f3f3f3));
+background-image: -webkit-linear-gradient(top,#fff,#f3f3f3);
+background-image: -moz-linear-gradient(top,#fff,#f3f3f3);
+background-image: -ms-linear-gradient(top,#fff,#f3f3f3);
+background-image: -o-linear-gradient(top,#fff,#f3f3f3);
+background-image: linear-gradient(to bottom,#fff,#f3f3f3);
+display: inline-block;
+text-decoration: none;
+margin: 0;
+padding: 0 10px 1px;
+cursor: pointer;
+border-width: 1px;
+border-style: solid;
+white-space: nowrap;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+color: #222;
+}
+
+#soukromy_chat_menu{
+padding-left:10px;
+padding-right:10px; 
+padding-bottom: 5px;       
+}
+
+input[type="submit"], .uvodni-novinka{
+border: 2px solid #1E90FF;
+-moz-border-radius: 5px;
+border-radius: 5px;
+font-weight: 900;
+background: #2a95c5;
+background-image: -webkit-gradient(linear,left top,left bottom,from(#2a95c5),to(#21759b));
+background-image: -webkit-linear-gradient(top,#2a95c5,#21759b);
+background-image: -moz-linear-gradient(top,#2a95c5,#21759b);
+background-image: -o-linear-gradient(top,#2a95c5,#21759b);
+background-image: linear-gradient(to bottom,#2a95c5,#21759b);
+border-color: #1e6a8d;
+color: #fff;
+text-shadow: 0 1px 0 #000;     
+}
+
+input[type="text"], input[type="password"], input[type="email"], .blokace{
+border: 2px solid #999;
+-moz-border-radius: 5px;
+border-radius: 5px;
+font-weight: 900; 
+background: #f3f3f3;
+background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f3f3f3));
+background-image: -webkit-linear-gradient(top,#fff,#f3f3f3);
+background-image: -moz-linear-gradient(top,#fff,#f3f3f3);
+background-image: -ms-linear-gradient(top,#fff,#f3f3f3);
+background-image: -o-linear-gradient(top,#fff,#f3f3f3);
+background-image: linear-gradient(to bottom,#fff,#f3f3f3);
+display: inline-block;
+text-decoration: none;
+margin: 0;
+padding: 0 10px 1px;
+border-width: 1px;
+border-style: solid;
+-webkit-border-radius: 3px;
+-webkit-appearance: none;
+border-radius: 3px;
+white-space: nowrap;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+color: #222;
+}
+
+select{
+border: 2px solid #999;
+-moz-border-radius: 5px;
+border-radius: 5px;
+font-weight: 900; 
+background: #f3f3f3;
+display: inline-block;
+text-decoration: none;
+margin: 0;
+width: 120px;
+padding: 4px 33px 1px;
+cursor: pointer;
+border-width: 1px;
+border-style: solid;
+-webkit-border-radius: 3px;
+border-radius: 3px;
+white-space: nowrap;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+color: #222;
+}
+
+.soukromy_chat_menu{
+}
+
+
+.chat_box .zpravy {
+  text-align: left;
+  width: 100%;
+  overflow: hidden;
+}
+
+.chat_box .formular{
+  bottom: -50px;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+}
+
+.color{
+  background-image: url('./vzhled/text.png');
+  font-size: 0px;
+  height: 23px;
+  width: 23px;   
+  cursor: pointer;
+}
+
+
+
+.spicka{
+position: absolute;
+margin-top: -20px;
+margin-left: 13px;
+width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 10px 17.3px 10px;
+border-color: transparent transparent #00c4ff transparent;
+}
+
+/*XXX*/
+
+
+#colorPicker .barva{
+    -moz-box-shadow: inset 0 0 9px #bfbfbfd6;
+    -webkit-box-shadow: inset 0 0 9px #bfbfbfd6;
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    border: 1px solid black;
+}
+
+ .zakladni_barva {
+    -moz-box-shadow: inset 0 0 20px #000000;
+    -webkit-box-shadow: inset 0 0 8px #000000;
+    box-shadow: inset 0 0 8px #000000;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    height: 30px;
+    width: 130px;
+    text-shadow: 0px 0px 2px #000;
+    color: #fff;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#Picker:hover #vyber{
+ display: block;
+}
+
+#vyber{
+    background-image: linear-gradient(to bottom, rgb(232 232 232), rgb(190 192 193));
+    position: absolute;
+    margin-left: -60px;
+    display: none;
+    margin-top: 14px;
+    padding: 5px 5px 5px 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid #21759b;
+}
+
+.spicka-chat{
+position: absolute;
+margin-top: -21px;
+margin-left: 55px;
+width: 0;
+height: 0;
+border-style: solid;
+border-width: 0 10px 17.3px 10px;
+border-color: transparent transparent rgb(42, 149, 197) transparent;
+}
+
+#smajlikPicker .smajlik{
+  -moz-box-shadow:    inset 0 0 20px #000000;
+  -webkit-box-shadow: inset 0 0 20px #000000;
+  box-shadow:         inset 0 0 20px #000000;
+  
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  border: 1px solid black;
+}
+
+#smajlikPicker a{height:32px; width:32px; cursor: pointer;}
+
+#smajlikPicker td:hover {background-color: #ffffff;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px;}
+
+#smajlikPicker .smajlik_img{max-height:28px; max-width:28px;}
+
+#smajlikPicker .smajlik_stred{margin-left: auto; margin-right: auto;}
