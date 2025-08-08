@@ -1,61 +1,33 @@
-<html lang="cs"><head>
-  <meta charset="UTF-8">
-  <title>IngLAND – ePortál občana</title>
-  <link rel="stylesheet" href="styl.css">
-  <link rel="stylesheet" href="style-portal.css">
-  <style>
-    .login-container {
-      max-width: 400px;
-      margin: 100px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      text-align: center;
-    }
-    .login-container input {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-    }
-    .login-container button {
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .login-container button:hover {
-      background: #0056b3;
-    }
-    body {
-      background-color: #dbe7f6;
-    }
-  </style>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">  
+  <title>IngLAND - ePortál občana</title>
+  <link href="./styl.css" rel="stylesheet" type="text/css">
 </head>
-<body>
-  <div class="login-container">
-    <img src="ingland-male.png" alt="logo" width="100">
-    <h2>Přihlášení do ePortálu občana</h2>
-    <form id="loginForm">
-      <input type="text" id="citizenId" placeholder="ID občana" required=""><br>
-      <input type="password" id="password" placeholder="Heslo" required=""><br>
-      <button type="submit">Přihlásit se</button>
+<body role="application"> 
+
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">  
+  <title>ePortál občana</title>
+  <link href="https://virtual.4fan.cz//style-portal.css" rel="stylesheet" type="text/css">
+
+
+  <div class="lista"></div>
+  <div class="umisteni">
+  <div class="center">
+    <div class="telo"><h1 style="margin-bottom: 0;">Vítá Vás</h1>
+<img class="logo" style="width: 250px;" src="./vzhled/ingland-male.png">
+<h3 style="margin-bottom: 0;font-style: italic;">"Nejlepší ministáteček pro život inženýrů."
+    </h3><form action="" method="POST">  
+      <table style="margin-top: 20px;margin-left: auto;margin-right: auto;padding: 10px 34px;background-color: #fff;border-radius: 9px;border: 1px solid #cecece;">
+        <tbody><tr><td colspan="2" style="text-align: center;"><h2>ePortál občana</h2></td></tr>
+        <tr><td>ID občana:</td><td><input type="text" name="kod" style="font-size: 20px;width: 135px;"></td></tr>
+        <tr><td>Heslo:</td><td><input type="password" name="heslo" style="font-size: 20px;width: 135px;"></td></tr>
+        <tr><td></td><td><input type="submit" name="tlacitko" value="Přihlásit se"></td></tr>
+      </tbody></table>
     </form>
-  </div>
-
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const id = document.getElementById("citizenId").value;
-      const pass = document.getElementById("password").value;
-      const entry = { id: id, pass: pass, time: new Date().toISOString() };
-      let log = JSON.parse(localStorage.getItem("loginLog")) || [];
-      log.push(entry);
-      localStorage.setItem("loginLog", JSON.stringify(log));
-    });
-  </script>
+</div></div></div>
 
 
-</body></html>
+
+  </body></html>
