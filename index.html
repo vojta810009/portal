@@ -1,99 +1,61 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IngLAND - ePortál občana</title>
-  <link rel="stylesheet" href="style.css" />
+<html lang="cs"><head>
+  <meta charset="UTF-8">
+  <title>IngLAND – ePortál občana</title>
+  <link rel="stylesheet" href="styl.css">
+  <link rel="stylesheet" href="style-portal.css">
+  <style>
+    .login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .login-container input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .login-container button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .login-container button:hover {
+      background: #0056b3;
+    }
+    body {
+      background-color: #dbe7f6;
+    }
+  </style>
 </head>
 <body>
-
-  <!-- Login modal -->
-  <div id="login-modal" class="modal">
-    <div class="modal-content">
-      <h2>Přihlášení</h2>
-      <form id="login-form">
-        <label>ID občana <input type="text" id="login-username" required /></label><br/>
-        <label>Heslo: <input type="password" id="login-password" required /></label><br/>
-        <button type="submit">Přihlásit se</button>
-      </form>
-      <p id="login-error" style="color:red; display:none;">Zadal jste špatné údaje!</p>
-    </div>
+  <div class="login-container">
+    <img src="ingland-male.png" alt="logo" width="100">
+    <h2>Přihlášení do ePortálu občana</h2>
+    <form id="loginForm">
+      <input type="text" id="citizenId" placeholder="ID občana" required=""><br>
+      <input type="password" id="password" placeholder="Heslo" required=""><br>
+      <button type="submit">Přihlásit se</button>
+    </form>
   </div>
 
-  <nav style="display:none;">
-    <ul class="menu">
-      <li><a href="#dashboard" class="active">HLAVNÍ STRANA</a></li>
-      <li><a href="#users">ZPRÁVY</a></li>
-      <li><a href="#settings">NASTAVENÍ</a></li>
-      <li><a href="#transactions">TRANSAKCE</a></li>
-      <li><a href="#shop">OBCHOD</a></li>
-      <li><a href="#logout">ODHLÁŠENÍ</a></li>
-    </ul>
-  </nav>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const id = document.getElementById("citizenId").value;
+      const pass = document.getElementById("password").value;
+      const entry = { id: id, pass: pass, time: new Date().toISOString() };
+      let log = JSON.parse(localStorage.getItem("loginLog")) || [];
+      log.push(entry);
+      localStorage.setItem("loginLog", JSON.stringify(log));
+    });
+  </script>
 
-  <main style="display:none;">
-    <section id="dashboard" class="active-section">
-      <h1>Úvodní strana portálu</h1>
-      <p>Zůstatek: <span id="king-balance">0 KIng</span></p>
-      <p id="admin-note" style="color:#28a745; display:none;">Jste přihlášen jako admin s neomezeným KIng.</p>
-    </section>
 
-    <section id="users">
-      <h1>Seznam uživatelů</h1>
-      <table class="data-table" id="users-table">
-        <thead><tr><th>Uživatel</th><th>Role</th><th>Akce</th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <button id="add-user">Přidat uživatele</button>
-    </section>
-
-    <section id="settings">
-      <h1>Nastavení</h1>
-      <form id="settings-form">
-        <label>Login: <input type="text" name="login" /></label><br/>
-        <label>Heslo: <input type="password" name="password" /></label><br/>
-        <label>
-          Automatické potvrzení transakcí:
-          <input type="checkbox" name="auto-confirm" />
-        </label><br/>
-        <button type="submit">Uložit změny</button>
-      </form>
-    </section>
-
-    <section id="transactions">
-      <h1>Transakce</h1>
-      <button id="new-transaction">Nová transakce</button>
-      <table class="data-table" id="transactions-table">
-        <thead><tr><th>Typ</th><th>Subjekt</th><th>Částka</th><th>Datum</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <section id="shop">
-      <h1>Obchod</h1>
-      
-      <!-- Admin panel pro správu itemů -->
-      <div id="admin-shop-manage" style="display:none; margin-bottom:20px; padding:10px; background:#333; border-radius:6px;">
-        <h3>Správa obchodních položek (admin)</h3>
-        <input type="text" id="new-item-name" placeholder="Název položky" />
-        <input type="number" id="new-item-price" placeholder="Cena KIng" min="1" />
-        <button id="add-shop-item">Přidat položku</button>
-      </div>
-      
-      <div id="shop-items"></div>
-      <h3>Košík</h3>
-      <div id="cart"></div>
-      <button id="checkout">Zaplatiť</button>
-    </section>
-
-    <section id="logout">
-      <h1>Odhlášení</h1>
-      <p>Probíhá odhlašování...</p>
-    </section>
-  </main>
-
-  <script src="script.js"></script>
-
-</body>
-</html>
+</body></html>
