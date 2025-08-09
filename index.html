@@ -84,13 +84,12 @@
 </div>
 
 <script>
-  // Data uživatelů
   const users = {
     "admin": {
       fullName: "Vojtěch Líkař z týmu Adminisrator",
       userName: "Vojtěch Líkař",
       team: "Administrators",
-      teamMembers: "",
+      teamMembers: "Tobiáš Černý, George Alexander Duma, Tomáš Komrska, Vojtěch Líkař, Jakub Sýkora, Jakub Šírek, Jan Zábran",
       personalBalance: "∞ KIng",
       personalBlock: "Blokace: 0 KIng",
       teamBalance: "∞ KIng",
@@ -101,7 +100,7 @@
       fullName: "Štěpán Allen Haas z týmu Tým A",
       userName: "Štěpán Allen Haas",
       team: "Tým A",
-      teamMembers: "",
+      teamMembers: "Členové týmu A: Karel, Petr, Jan",
       personalBalance: "500 KIng",
       personalBlock: "Blokace: 0 KIng",
       teamBalance: "500 KIng",
@@ -112,7 +111,7 @@
       fullName: "Jakub Šírek z týmu Tým B",
       userName: "Jakub Šírek",
       team: "Tým B",
-      teamMembers: "",
+      teamMembers: "Členové týmu B: Martin, Pavel, Tomáš",
       personalBalance: "500 KIng",
       personalBlock: "Blokace: 0 KIng",
       teamBalance: "500 KIng",
@@ -126,7 +125,6 @@
     let pass = document.getElementById("password").value;
 
     if(users[user] && users[user].password === pass) {
-      // Uživatel autentizován
       localStorage.setItem("loggedInUser", user);
       showPortalForUser(user);
       document.getElementById("loginSection").style.display = "none";
