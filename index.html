@@ -41,7 +41,7 @@
     <table style="text-align: center; color: #fff; margin-left:auto; margin-right:auto; height: inherit;">
       <tbody>
         <tr>
-          <td>Přihlášen jako: <b>Vojtěch Líkař z týmu Bobři</b></td>
+          <td>Přihlášen jako: <b id="userFullName">---</b></td>
           <td style="padding-left:10px;">
             <form action="" style="margin: 0;" method="POST">
               <input type="submit" name="tym" class="podpolozka_aktivni" value="PŘEPNOUT na TÝMOVÝ účet">
@@ -57,60 +57,17 @@
 
   <div class="strana">
     <div class="menu-main">
-      <!-- zbytek menu a obsahu -->
-      <div class="nazev_strany">Úvodní strana portálu</div>
+      <div class="nazev_strany" id="mainPageTitle">Úvodní strana portálu</div>
       <div id="widgets">
         <div class="box_nastaveni" id="box_osobni-informace">
           <h2 onclick="box('osobni-informace');">Osobní informace<div class="sipka"></div></h2>
           <div class="objekt">
             <table>
               <tbody>
-                <tr><td>Přihlášen jako:</td><td><b>Vojtěch Líkař</b></td></tr>
-                <tr><td>Člen týmu:</td><td><b>Bobři</b></td></tr>
-                <tr><td>Spolučlenové:</td><td><b> Tobiáš Černý, George Alexander Duma, Tomáš Komrska, Vojtěch Líkař, Jakub Sýkora, Jakub Šírek, Jan Zábran</b></td></tr>
+                <tr><td>Přihlášen jako:</td><td><b id="userName">---</b></td></tr>
+                <tr><td>Člen týmu:</td><td><b id="userTeam">---</b></td></tr>
+                <tr><td>Spolučlenové:</td><td><b id="userTeamMembers">---</b></td></tr>
                 <tr><td colspan="2" style="text-align: center;">FINANČNÍ STAV</td></tr>
                 <tr>
-                  <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div>1849 KIng</div><div>Blokace: 0 KIng</div></div></td>
-                  <td style="text-align: center;">Týmový účet: <br><div class="KIng" style="margin: auto;"><div>-46 (+12922) KIng</div><div>Blokace: 0 (+0) KIng</div></div></td>
-                </tr>
-                <tr><td>Poslední přihlášení do administrace: <b>09.08.2025 09:52</b></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div> 
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-function checkLogin() {
-    let user = document.getElementById("username").value;
-    let pass = document.getElementById("password").value;
-
-    if (user === "admin" && pass === "Admin2025") {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("portalContent").style.display = "block";
-        localStorage.setItem("loggedIn", "true");
-    } else {
-        alert("Neplatné přihlašovací údaje!");
-    }
-}
-
-function logout() {
-    localStorage.removeItem("loggedIn");
-    document.getElementById("portalContent").style.display = "none";
-    document.getElementById("loginSection").style.display = "block";
-}
-
-window.onload = function() {
-    if (localStorage.getItem("loggedIn") === "true") {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("portalContent").style.display = "block";
-    }
-}
-</script>
-
-</body>
-</html>
+                  <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div id="personalBalance">---</div><div id="personalBlock">---</div></div></td>
+                  <td style="text-align: center
