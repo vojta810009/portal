@@ -70,4 +70,105 @@
                 <tr><td colspan="2" style="text-align: center;">FINANČNÍ STAV</td></tr>
                 <tr>
                   <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div id="personalBalance">---</div><div id="personalBlock">---</div></div></td>
-                  <td style="text-align: center
+                  <td style="text-align: center;">Týmový účet: <br><div class="KIng" style="margin: auto;"><div id="teamBalance">---</div><div id="teamBlock">---</div></div></td>
+                </tr>
+                <tr><td>Poslední přihlášení do administrace: <b>09.08.2025 09:52</b></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Data uživatelů
+  const users = {
+    "admin": {
+      fullName: "Vojtěch Líkař z týmu Adminisrator",
+      userName: "Vojtěch Líkař",
+      team: "Administrators",
+      teamMembers: "",
+      personalBalance: "∞ KIng",
+      personalBlock: "Blokace: 0 KIng",
+      teamBalance: "∞ KIng",
+      teamBlock: "Blokace: 0 KIng",
+      password: "Admin2025"
+    },
+    "stepan1": {
+      fullName: "Štěpán Allen Haas z týmu Tým A",
+      userName: "Štěpán Allen Haas",
+      team: "Tým A",
+      teamMembers: "",
+      personalBalance: "500 KIng",
+      personalBlock: "Blokace: 0 KIng",
+      teamBalance: "500 KIng",
+      teamBlock: "Blokace: 0 KIng",
+      password: "75995"
+    },
+    "jakub2": {
+      fullName: "Jakub Šírek z týmu Tým B",
+      userName: "Jakub Šírek",
+      team: "Tým B",
+      teamMembers: "",
+      personalBalance: "500 KIng",
+      personalBlock: "Blokace: 0 KIng",
+      teamBalance: "500 KIng",
+      teamBlock: "Blokace: 0 KIng",
+      password: "68554"
+    }
+  };
+
+  function checkLogin() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    if(users[user] && users[user].password === pass) {
+      // Uživatel autentizován
+      localStorage.setItem("loggedInUser", user);
+      showPortalForUser(user);
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("portalContent").style.display = "block";
+    } else {
+      alert("Neplatné přihlašovací údaje!");
+    }
+  }
+
+  function showPortalForUser(user) {
+    const u = users[user];
+    document.getElementById("userFullName").innerText = u.fullName;
+    document.getElementById("userName").innerText = u.userName;
+    document.getElementById("userTeam").innerText = u.team;
+    document.getElementById("userTeamMembers").innerText = u.teamMembers;
+    document.getElementById("personalBalance").innerText = u.personalBalance;
+    document.getElementById("personalBlock").innerText = u.personalBlock;
+    document.getElementById("teamBalance").innerText = u.teamBalance;
+    document.getElementById("teamBlock").innerText = u.teamBlock;
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    document.getElementById("portalContent").style.display = "none";
+    document.getElementById("loginSection").style.display = "block";
+  }
+
+  window.onload = function() {
+    let loggedUser = localStorage.getItem("loggedInUser");
+    if(loggedUser && users[loggedUser]) {
+      showPortalForUser(loggedUser);
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("portalContent").style.display = "block";
+    }
+  }
+
+  function box(id) {
+    var el = document.getElementById('box_' + id);
+    if (el.className === 'box_nastaveni') el.className = 'box_nastaveni closed';
+    else el.className = 'box_nastaveni';
+  }
+</script>
+
+</body>
+</html>
