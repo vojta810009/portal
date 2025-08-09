@@ -10,6 +10,7 @@
   <script src="../datatables/datatables.min.js"></script>
   <style>
     #portalContent { display: none; }
+    #logoutTimer { font-weight: bold; color: yellow; }
   </style>
 </head>
 <body role="application">
@@ -35,6 +36,182 @@
 </div>
 
 <!-- PORTÁL SEKCE -->
+<div id="portalContent">
+
+  <div class="lista">
+    <table style="text-align: center; color: #fff; margin-left:auto; margin-right:auto; height: inherit;">
+      <tbody>
+        <tr>
+          <td>Přihlášen jako: <b id="userFullName">---</b></td>
+          <td style="padding-left:15px;">Odhlášení za: <span id="logoutTimer">--:--</span></td>
+          <td style="padding-left:10px;">
+            <form action="" style="margin: 0;" method="POST">
+              <input type="submit" name="tym" class="podpolozka_aktivni" value="PŘEPNOUT na TÝMOVÝ účet">
+            </form>
+          </td>
+          <td style="padding-left:10px;">
+            <a href="#" onclick="logout()"><input type="submit" value="Odhlášení"></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="strana">
+    <div class="menu-main">
+      <div class="nazev_strany" id="mainPageTitle">Úvodní strana portálu</div>
+      <div id="widgets">
+        <div class="box_nastaveni" id="box_osobni-informace">
+          <h2 onclick="box('osobni-informace');">Osobní informace<div class="sipka"></div></h2>
+          <div class="objekt">
+            <table>
+              <tbody>
+                <tr><td>Přihlášen jako:</td><td><b id="userName">---</b></td></tr>
+                <tr><td>Člen týmu:</td><td><b id="userTeam">---</b></td></tr>
+                <tr><td>Spolučlenové:</td><td><b id="userTeamMembers">---</b></td></tr>
+                <tr><td colspan="2" style="text-align: center;">FINANČNÍ STAV</td></tr>
+                <tr>
+                  <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div id="personalBalance">---</div><div id="personalBlock">---</div></div></td>
+                  <td style="text-align: center;">Týmový účet: <br><div class="KIng" style="margin: auto;"><div id="teamBalance">---</div><div id="teamBlock">---</div></div></td>
+                </tr>
+                <tr><td>Poslední přihlášení do administrace: <b>09.08.2025 09:52</b></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const users = {
+    "admin": {
+      fullName: "Vojtěch Líkař z týmu Adminisrator",
+      userName: "Vojtěch Líkař",
+      team: "Administrators",
+      teamMembers: "Tobiáš Černý, George Alexander Duma, Tomáš Komrska, Vojtěch Líkař, Jakub Sýkora, Jakub Šírek, Jan Zábran",
+      personalBalance: "∞ KIng",
+      personalBlock: "Blokace: 0 KIng",
+      teamBalance: "∞ KIng",
+      teamBlock: "Blokace: 0 KIng",
+      password: "Admin2025"
+    },
+    "stepan1": {
+      fullName: "Štěpán Allen Haas z týmu Tým A",
+      userName: "Štěpán Allen Haas",
+      team: "Tým A",
+      teamMembers: "Členové týmu A: Karel, Petr, Jan",
+      personalBalance: "500 KIng",
+      personalBlock: "Blokace: 0 KIng",
+      teamBalance: "500 KIng",
+      teamBlock: "Blokace: 0 KIng",
+      password: "75995"
+    },
+    "jakub2": {
+      fullName: "Jakub Šírek z týmu Tým B",
+      userName: "Jakub Šírek",
+      team: "Tým B",
+      teamMembers: "Členové týmu B: Martin, Pavel, Tomáš",
+      personalBalance: "500 KIng",
+      personalBlock: "Blokace: 0 KIng",
+      teamBalance: "500 KIng",
+      teamBlock: "Blokace: 0 KIng",
+      password: "68554"
+    }
+  };
+
+  function checkLogin() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    if(users[user] && users[user].password === pass) {
+      localStorage.setItem("loggedInUser", user);
+      showPortalForUser(user);
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("portalContent").style.display = "block";
+      resetLogoutTimer();
+    } else {
+      alert("Neplatné přihlašovací údaje!");
+    }
+  }
+
+  function showPortalForUser(user) {
+    const u = users[user];
+    document.getElementById("userFullName").innerText = u.fullName;
+    document.getElementById("userName").innerText = u.userName;
+    document.getElementById("userTeam").innerText = u.team;
+    document.getElementById("userTeamMembers").innerText = u.teamMembers;
+    document.getElementById("personalBalance").innerText = u.personalBalance;
+    document.getElementById("personalBlock").innerText = u.personalBlock;
+    document.getElementById("teamBalance").innerText = u.teamBalance;
+    document.getElementById("teamBlock").innerText = u.teamBlock;
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    document.getElementById("portalContent").style.display = "none";
+    document.getElementById("loginSection").style.display = "block";
+    document.getElementById("logoutTimer").innerText = "--:--";
+    clearInterval(timerInterval);
+  }
+
+  // === AUTOLOGOUT PO 2 MINUTÁCH S ODPOČTEM ===
+  let logoutTimer;
+  let timerInterval;
+  const timeoutDuration = 120; // sekundy
+
+  function resetLogoutTimer() {
+    clearTimeout(logoutTimer);
+    clearInterval(timerInterval);
+    let remaining = timeoutDuration;
+    updateTimerDisplay(remaining);
+
+    timerInterval = setInterval(() => {
+      remaining--;
+      updateTimerDisplay(remaining);
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+      }
+    }, 1000);
+
+    logoutTimer = setTimeout(() => {
+      alert("Byl jste odhlášen z důvodu nečinnosti.");
+      logout();
+    }, timeoutDuration * 1000);
+  }
+
+  function updateTimerDisplay(seconds) {
+    let min = String(Math.floor(seconds / 60)).padStart(2, '0');
+    let sec = String(seconds % 60).padStart(2, '0');
+    document.getElementById("logoutTimer").innerText = `${min}:${sec}`;
+  }
+
+  document.addEventListener("mousemove", resetLogoutTimer);
+  document.addEventListener("keypress", resetLogoutTimer);
+  document.addEventListener("click", resetLogoutTimer);
+  document.addEventListener("scroll", resetLogoutTimer);
+
+  window.onload = function() {
+    let loggedUser = localStorage.getItem("loggedInUser");
+    if(loggedUser && users[loggedUser]) {
+      showPortalForUser(loggedUser);
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("portalContent").style.display = "block";
+      resetLogoutTimer();
+    }
+  }
+
+  function box(id) {
+    var el = document.getElementById('box_' + id);
+    if (el.className === 'box_nastaveni') el.className = 'box_nastaveni closed';
+    else el.className = 'box_nastaveni';
+  }
+</script>
+
+</body>
+</html><!-- PORTÁL SEKCE -->
 <div id="portalContent">
 
   <div class="lista">
