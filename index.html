@@ -1,33 +1,115 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs"><head>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">
+<head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">  
   <title>IngLAND - ePortál občana</title>
   <link href="./styl.css" rel="stylesheet" type="text/css">
-</head>
-<body role="application"> 
-
-
-
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">  
-  <title>ePortál občana</title>
   <link href="https://virtual.4fan.cz//style-portal.css" rel="stylesheet" type="text/css">
+  <link href="../datatables/datatables.min.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-latest.js"></script>
+  <script src="../datatables/datatables.min.js"></script>
+  <style>
+    #portalContent { display: none; }
+  </style>
+</head>
+<body role="application">
 
-
-  <div class="lista"></div>
-  <div class="umisteni">
+<!-- LOGIN SEKCE -->
+<div id="loginSection" class="umisteni">
   <div class="center">
-    <div class="telo"><h1 style="margin-bottom: 0;">Vítá Vás</h1>
-<img class="logo" style="width: 250px;" src="https://Virtual.4fan.cz/vzhled/ingland-male.png">
-<h3 style="margin-bottom: 0;font-style: italic;">"Nejlepší ministáteček pro život inženýrů."
-    </h3><form action="" method="POST">  
+    <div class="telo">
+      <h1 style="margin-bottom: 0;">Vítá Vás</h1>
+      <img class="logo" style="width: 250px;" src="https://Virtual.4fan.cz/vzhled/ingland-male.png">
+      <h3 style="margin-bottom: 0;font-style: italic;">"Nejlepší ministáteček pro život inženýrů."</h3>
       <table style="margin-top: 20px;margin-left: auto;margin-right: auto;padding: 10px 34px;background-color: #fff;border-radius: 9px;border: 1px solid #cecece;">
-        <tbody><tr><td colspan="2" style="text-align: center;"><h2>ePortál občana</h2></td></tr>
-        <tr><td>ID občana:</td><td><input type="text" name="kod" style="font-size: 20px;width: 135px;"></td></tr>
-        <tr><td>Heslo:</td><td><input type="password" name="heslo" style="font-size: 20px;width: 135px;"></td></tr>
-        <tr><td></td><td><input type="submit" name="tlacitko" value="Přihlásit se"></td></tr>
-      </tbody></table>
-    </form>
-</div></div></div>
+        <tbody>
+          <tr><td colspan="2" style="text-align: center;"><h2>ePortál občana</h2></td></tr>
+          <tr><td>ID občana:</td><td><input type="text" id="username" style="font-size: 20px;width: 135px;"></td></tr>
+          <tr><td>Heslo:</td><td><input type="password" id="password" style="font-size: 20px;width: 135px;"></td></tr>
+          <tr><td></td><td><button onclick="checkLogin()">Přihlásit se</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
+<!-- PORTÁL SEKCE -->
+<div id="portalContent">
 
+  <div class="lista">
+    <table style="text-align: center; color: #fff; margin-left:auto; margin-right:auto; height: inherit;">
+      <tbody>
+        <tr>
+          <td>Přihlášen jako: <b>Vojtěch Líkař z týmu Bobři</b></td>
+          <td style="padding-left:10px;">
+            <form action="" style="margin: 0;" method="POST">
+              <input type="submit" name="tym" class="podpolozka_aktivni" value="PŘEPNOUT na TÝMOVÝ účet">
+            </form>
+          </td>
+          <td style="padding-left:10px;">
+            <a href="#" onclick="logout()"><input type="submit" value="Odhlášení"></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  </body></html>
+  <div class="strana">
+    <div class="menu-main">
+      <!-- zbytek menu a obsahu -->
+      <div class="nazev_strany">Úvodní strana portálu</div>
+      <div id="widgets">
+        <div class="box_nastaveni" id="box_osobni-informace">
+          <h2 onclick="box('osobni-informace');">Osobní informace<div class="sipka"></div></h2>
+          <div class="objekt">
+            <table>
+              <tbody>
+                <tr><td>Přihlášen jako:</td><td><b>Vojtěch Líkař</b></td></tr>
+                <tr><td>Člen týmu:</td><td><b>Bobři</b></td></tr>
+                <tr><td>Spolučlenové:</td><td><b> Tobiáš Černý, George Alexander Duma, Tomáš Komrska, Vojtěch Líkař, Jakub Sýkora, Jakub Šírek, Jan Zábran</b></td></tr>
+                <tr><td colspan="2" style="text-align: center;">FINANČNÍ STAV</td></tr>
+                <tr>
+                  <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div>1849 KIng</div><div>Blokace: 0 KIng</div></div></td>
+                  <td style="text-align: center;">Týmový účet: <br><div class="KIng" style="margin: auto;"><div>-46 (+12922) KIng</div><div>Blokace: 0 (+0) KIng</div></div></td>
+                </tr>
+                <tr><td>Poslední přihlášení do administrace: <b>09.08.2025 09:52</b></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function checkLogin() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    if (user === "admin" && pass === "Admin2025") {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("portalContent").style.display = "block";
+        localStorage.setItem("loggedIn", "true");
+    } else {
+        alert("Neplatné přihlašovací údaje!");
+    }
+}
+
+function logout() {
+    localStorage.removeItem("loggedIn");
+    document.getElementById("portalContent").style.display = "none";
+    document.getElementById("loginSection").style.display = "block";
+}
+
+window.onload = function() {
+    if (localStorage.getItem("loggedIn") === "true") {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("portalContent").style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
