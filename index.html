@@ -144,41 +144,7 @@
     clearInterval(timerInterval);  
   }  
   
-  // === AUTOLOGOUT PO 2 MINUTÁCH S ODPOČTEM ===  
-  let logoutTimer;  
-  let timerInterval;  
-  const timeoutDuration = 120; // sekundy  
-  
-  function resetLogoutTimer() {  
-    clearTimeout(logoutTimer);  
-    clearInterval(timerInterval);  
-    let remaining = timeoutDuration;  
-    updateTimerDisplay(remaining);  
-  
-    timerInterval = setInterval(() => {  
-      remaining--;  
-      updateTimerDisplay(remaining);  
-      if (remaining <= 0) {  
-        clearInterval(timerInterval);  
-      }  
-    }, 1000);  
-  
-    logoutTimer = setTimeout(() => {  
-      alert("Byl jste odhlášen z důvodu nečinnosti.");  
-      logout();  
-    }, timeoutDuration * 1000);  
-  }  
-  
-  function updateTimerDisplay(seconds) {  
-    let min = String(Math.floor(seconds / 60)).padStart(2, '0');  
-    let sec = String(seconds % 60).padStart(2, '0');  
-    document.getElementById("logoutTimer").innerText = `${min}:${sec}`;  
-  }  
-  
-  document.addEventListener("mousemove", resetLogoutTimer);  
-  document.addEventListener("keypress", resetLogoutTimer);  
-  document.addEventListener("click", resetLogoutTimer);  
-  document.addEventListener("scroll", resetLogoutTimer);  
+ 
   
   window.onload = function() {  
     let loggedUser = localStorage.getItem("loggedInUser");  
