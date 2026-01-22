@@ -20,11 +20,63 @@
     #adminUpload { margin: 20px; padding: 20px; background: #f0f0f0; border-radius: 5px; }
     .admin-controls { margin-top: 10px; }
     .delete-btn { background: red; color: white; border: none; padding: 3px 8px; cursor: pointer; margin-left: 10px; }
-    .tabs { display: flex; margin: 20px; }
-    .tab { padding: 10px 20px; background: #e0e0e0; cursor: pointer; margin-right: 5px; }
-    .tab.active { background: #c00; color: white; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    
+    /* UPRAVENÝ NAVBAR STYL */
+    .tabs { 
+      display: flex; 
+      margin: 0; 
+      padding: 10px 20px; 
+      background: #f0f0f0; 
+      position: relative; 
+      z-index: 10; 
+      margin-top: 0; 
+    }
+    .tab { 
+      padding: 10px 20px; 
+      background: #e0e0e0; 
+      cursor: pointer; 
+      margin-right: 5px; 
+      border-radius: 4px 4px 0 0;
+    }
+    .tab.active { 
+      background: #c00; 
+      color: white; 
+    }
+    .tab-content { 
+      display: none; 
+      padding: 20px; 
+    }
+    .tab-content.active { 
+      display: block; 
+    }
+    
+    /* UPRAVENÝ LISTA STYL */
+    .lista {
+      position: relative;
+      z-index: 20;
+      background: #8b0000;
+      color: white;
+      padding: 10px 0;
+      height: auto;
+      min-height: 50px;
+    }
+    
+    .lista table {
+      width: 100%;
+      table-layout: fixed;
+    }
+    
+    .lista td {
+      padding: 5px 10px;
+      vertical-align: middle;
+    }
+    
+    .lista button, .lista input[type="submit"] {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+    
+    .debug-info { background: #ffeb3b; padding: 5px; margin: 5px; border-radius: 3px; display: none; }
   </style>  
 </head>  
 <body role="application">
@@ -35,7 +87,7 @@
     <div class="center">  
       <div class="telo">  
         <h1 style="margin-bottom: 0;">Vítá Vás</h1>  
-        <img class="logo" style="width: 250px;" src="SFRI-male.png">  
+        <img class="logo" style="width: 250px;" src="SFRI-male.png" alt="Logo SFRI">  
         <h3 style="margin-bottom: 0;font-style: italic;">"Socialistická Federativní Republika IngLAND."</h3>  
         <table style="margin-top: 20px;margin-left: auto;margin-right: auto;padding: 10px 34px;background-color: #fff;border-radius: 9px;border: 1px solid #cecece;">  
           <tbody>  
@@ -43,6 +95,11 @@
             <tr><td>ID občana:</td><td><input type="text" id="username" style="font-size: 20px;width: 135px;"></td></tr>  
             <tr><td>Heslo:</td><td><input type="password" id="password" style="font-size: 20px;width: 135px;"></td></tr>  
             <tr><td></td><td><button onclick="checkLogin()">Přihlásit se</button></td></tr>  
+            <tr><td colspan="2" style="text-align: center; padding-top: 10px;">
+              <small>Testovací účty:<br>
+              user1 / demo123 (běžný uživatel)<br>
+              admin / admin123 (administrátor)</small>
+            </td></tr>
           </tbody>  
         </table>  
       </div>  
@@ -51,23 +108,33 @@
   
   <!-- PORTÁL VLÁDY SEKCE -->  
   <div id="portalContent">
+    <!-- HORNÍ LIŠTA S INFORMACEMI -->
     <div class="lista">  
-      <table style="text-align: center; color: #fff; margin-left:auto; margin-right:auto; height: inherit;">  
+      <table>
         <tbody>  
           <tr>  
-            <td>Přihlášen jako: <b id="userFullName">---</b></td>  
-            <td style="padding-left:15px;">Odhlášení za: <span id="logoutTimer">--:--</span></td>  
-            <td style="padding-left:10px;">
-              <button class="podpolozka_aktivni" onclick="switchToTab('news')">PORTÁL VLÁDY</button>
+            <td style="width: 30%;">Přihlášen jako: <b id="userFullName">---</b></td>  
+            <td style="width: 20%;">Odhlášení za: <span id="logoutTimer">--:--</span></td>  
+            <td style="width: 25%;">
+              <button class="podpolozka_aktivni" onclick="switchToTab('news')" style="width: 100%;">PORTÁL VLÁDY</button>
             </td>  
-            <td style="padding-left:10px;">  
-              <a href="#" onclick="logout()"><input type="submit" value="Odhlášení"></a>  
+            <td style="width: 15%;">
+              <button onclick="logout()" style="width: 100%;">Odhlášení</button>
             </td>  
+            <td style="width: 10%;">
+              <button onclick="showDebug()" style="background: #ff9800; color: white; width: 100%;">Debug</button>
+            </td>
           </tr>  
         </tbody>  
-      </table>  
+      </table>
     </div>
     
+    <div id="debugInfo" class="debug-info">
+      <strong>Debug info:</strong>
+      <div id="debugContent"></div>
+    </div>
+    
+    <!-- NAVIGAČNÍ ZÁLOŽKY -->
     <div class="tabs">
       <div class="tab active" onclick="switchToTab('personal')">Osobní informace</div>
       <div class="tab" onclick="switchToTab('news')">Portál vlády</div>
@@ -93,7 +160,7 @@
                       <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div id="personalBalance">---</div><div id="personalBlock">---</div></div></td>  
                       <td style="text-align: center;">Týmový účet: <br><div class="KIng" style="margin: auto;"><div id="teamBalance">---</div><div id="teamBlock">---</div></div></td>  
                     </tr>  
-                    <tr><td>Poslední přihlášení do administrace: <b id="lastLogin">09.08.2025 09:52</b></td></tr>  
+                    <tr><td>Poslední přihlášení do administrace: <b id="lastLogin">---</b></td></tr>  
                   </tbody>  
                 </table>  
               </div>  
@@ -152,48 +219,39 @@
 
   <script>  
     // Databáze uživatelů
-    const users = {  
-      "MaybeOceann": {  
-        fullName: "Soudruh Štěpán A. Haas z týmu Vláda SFRI",  
-        userName: "Maybe_Oceann",  
-        team: "Vláda SFRI",  
-        teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
-        personalBalance: "57878946874684 ILD",  
-        personalBlock: "Blokace: 0 ILD",  
-        teamBalance: "∞ ILD",  
-        teamBlock: "Blokace: 0 ILD",  
-        password: "petra6058",
-        isAdmin: false
-      },  
-      "Vojta_Fotograf": {  
-        fullName: "Vojta_Fotograf z týmu Vláda SFRI",  
-        userName: "Vojta_Fotograf",  
-        team: "Vláda SFRI",  
-        teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
-        personalBalance: "4856486764864784186 ILD",  
-        personalBlock: "Blokace: 0 ILD",  
-        teamBalance: "∞ ILD",  
-        teamBlock: "Blokace: 0 ILD",  
-        password: "Vojta669*4",
-        isAdmin: false
-      },  
-      "SamV": {  
-        fullName: "Samuel Veselý z týmu Vláda SFRI",  
-        userName: "Samuel Veselý",  
-        team: "Vláda SFRI",  
-        teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
-        personalBalance: "463841896966355634 ILD",  
-        personalBlock: "Blokace: 0 ILD",  
-        teamBalance: "∞ ILD",  
-        teamBlock: "Blokace: 0 ILD",  
-        password: "123456",
+    const users = {
+      // Ukázkový uživatel 1
+      "user1": {
+        fullName: "Člen vlády SFRI",
+        userName: "Uživatel 1",
+        team: "Vláda SFRI",
+        teamMembers: "Člen A, Člen B, Člen C",
+        personalBalance: "1000000 ILD",
+        personalBlock: "Blokace: 0 ILD",
+        teamBalance: "∞ ILD",
+        teamBlock: "Blokace: 0 ILD",
+        password: "demo123",
         isAdmin: false
       },
+      // Ukázkový uživatel 2
+      "user2": {
+        fullName: "Další člen vlády",
+        userName: "Uživatel 2",
+        team: "Vláda SFRI",
+        teamMembers: "Člen A, Člen B, Člen C",
+        personalBalance: "1500000 ILD",
+        personalBlock: "Blokace: 0 ILD",
+        teamBalance: "∞ ILD",
+        teamBlock: "Blokace: 0 ILD",
+        password: "demo456",
+        isAdmin: false
+      },
+      // Administrátor
       "admin": {
-        fullName: "Administrátor portálu vlády SFRI",
+        fullName: "Administrátor portálu",
         userName: "admin",
         team: "Administrace",
-        teamMembers: "Pouze administrátor",
+        teamMembers: "Systémový administrátor",
         personalBalance: "999999999 ILD",
         personalBlock: "Blokace: 0 ILD",
         teamBalance: "∞ ILD",
@@ -203,22 +261,22 @@
       }
     };
     
-    // Databáze novinek (ukládáme do localStorage)
+    // Demo novinky
     let news = JSON.parse(localStorage.getItem('sfriNews')) || [
       {
         id: 1,
         title: "Vláda SFRI schválila nový rozpočet",
-        text: "Vláda Socialistické Federativní Republiky IngLAND dnes schválila rozpočet na příští rok s důrazem na sociální programy.",
+        text: "Vláda Socialistické Federativní Republiky IngLAND dnes schválila rozpočet na příští rok s důrazem na sociální programy a infrastrukturu.",
         image: null,
-        date: "2024-01-15 10:30",
+        date: new Date().toLocaleString('cs-CZ'),
         author: "admin"
       },
       {
         id: 2,
         title: "Slavnostní otevření nové školy",
-        text: "Dnes byla slavnostně otevřena nová škola v hlavním městě. Škola bude sloužit 500 studentům.",
+        text: "Dnes byla slavnostně otevřena nová škola v hlavním městě. Moderní zařízení bude sloužit studentům z celé republiky.",
         image: null,
-        date: "2024-01-10 14:00",
+        date: new Date(Date.now() - 86400000).toLocaleString('cs-CZ'),
         author: "admin"
       }
     ];
@@ -227,8 +285,23 @@
     let logoutTime = 600; // 10 minut v sekundách
     let timerInterval;
     
+    function showDebug() {
+      const debugDiv = document.getElementById('debugInfo');
+      const contentDiv = document.getElementById('debugContent');
+      
+      contentDiv.innerHTML = `
+        <div>Aktuální uživatel: ${currentUser || 'žádný'}</div>
+        <div>Je admin: ${currentUser ? users[currentUser]?.isAdmin : 'ne'}</div>
+        <div>Počet novinek: ${news.length}</div>
+        <div>Čas odhlášení: ${logoutTime}s</div>
+        <div>Admin tab zobrazen: ${document.getElementById('adminTab').style.display}</div>
+      `;
+      
+      debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
+    }
+    
     function checkLogin() {  
-      let user = document.getElementById("username").value;  
+      let user = document.getElementById("username").value.trim();  
       let pass = document.getElementById("password").value;  
       
       if(users[user] && users[user].password === pass) {  
@@ -239,8 +312,12 @@
         document.getElementById("loginSection").style.display = "none";  
         document.getElementById("portalContent").style.display = "block";
         
+        // Zobrazit nebo skrýt admin tab
+        const adminTab = document.getElementById('adminTab');
         if(users[user].isAdmin) {
-          document.getElementById("adminTab").style.display = "block";
+          adminTab.style.display = 'block';
+        } else {
+          adminTab.style.display = 'none';
         }
         
         resetLogoutTimer();  
@@ -248,6 +325,8 @@
         if(users[user].isAdmin) {
           loadAdminNews();
         }
+        
+        console.log("Přihlášen uživatel:", user, "Is admin:", users[user].isAdmin);
       } else {  
         alert("Neplatné přihlašovací údaje!");  
       }  
@@ -264,11 +343,13 @@
       document.getElementById("teamBalance").innerText = u.teamBalance;  
       document.getElementById("teamBlock").innerText = u.teamBlock;
       
-      const lastLogin = localStorage.getItem("lastLogin") || "09.08.2025 09:52";
+      const lastLogin = localStorage.getItem("lastLogin") || new Date().toLocaleString('cs-CZ');
       document.getElementById("lastLogin").innerText = lastLogin;
     }  
     
     function switchToTab(tabName) {
+      console.log("Přepínám na záložku:", tabName);
+      
       // Skrýt všechny záložky
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
@@ -280,20 +361,27 @@
       });
       
       // Zobrazit vybranou záložku
-      document.getElementById(tabName + 'Tab').classList.add('active');
-      
-      // Aktivovat odpovídající tab
-      document.querySelectorAll('.tab').forEach(tab => {
-        if(tab.textContent.includes(tabName === 'personal' ? 'Osobní' : 
-                                   tabName === 'news' ? 'Portál' : 
-                                   'Administrace')) {
-          tab.classList.add('active');
+      const targetTab = document.getElementById(tabName + 'Tab');
+      if (targetTab) {
+        targetTab.classList.add('active');
+        
+        // Aktivovat odpovídající tab
+        document.querySelectorAll('.tab').forEach(tab => {
+          if (tab.textContent.includes(
+            tabName === 'personal' ? 'Osobní' : 
+            tabName === 'news' ? 'Portál' : 
+            'Administrace')
+          ) {
+            tab.classList.add('active');
+          }
+        });
+        
+        // Pokud přepínáme na administraci, načtěme data
+        if(tabName === 'admin' && currentUser && users[currentUser] && users[currentUser].isAdmin) {
+          loadAdminNews();
         }
-      });
-      
-      // Pokud přepínáme na administraci, načtěme data
-      if(tabName === 'admin' && users[currentUser].isAdmin) {
-        loadAdminNews();
+      } else {
+        console.error("Záložka neexistuje:", tabName + 'Tab');
       }
     }
     
@@ -351,13 +439,13 @@
     }
     
     function uploadNews() {
-      if(!currentUser || !users[currentUser].isAdmin) {
+      if(!currentUser || !users[currentUser] || !users[currentUser].isAdmin) {
         alert('Pouze administrátor může nahrávat zprávy!');
         return;
       }
       
-      const title = document.getElementById('newsTitle').value;
-      const text = document.getElementById('newsText').value;
+      const title = document.getElementById('newsTitle').value.trim();
+      const text = document.getElementById('newsText').value.trim();
       const imageInput = document.getElementById('newsImage');
       
       if(!title || !text) {
@@ -425,6 +513,10 @@
       document.getElementById("logoutTimer").innerText = "--:--";  
       clearInterval(timerInterval);
       currentUser = null;
+      
+      // Resetovat formulář
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
     }  
     
     function resetLogoutTimer() {
@@ -454,7 +546,22 @@
       var el = document.getElementById('box_' + id);  
       if (el.className === 'box_nastaveni') el.className = 'box_nastaveni closed';  
       else el.className = 'box_nastaveni';  
-    }  
+    }
+    
+    // Přidání klávesové zkratky pro přihlášení (Enter)
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('password').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          checkLogin();
+        }
+      });
+      
+      document.getElementById('username').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          checkLogin();
+        }
+      });
+    });
     
     window.onload = function() {  
       let loggedUser = localStorage.getItem("loggedInUser");  
@@ -464,8 +571,12 @@
         document.getElementById("loginSection").style.display = "none";  
         document.getElementById("portalContent").style.display = "block";
         
+        // Zobrazit nebo skrýt admin tab
+        const adminTab = document.getElementById('adminTab');
         if(users[loggedUser].isAdmin) {
-          document.getElementById("adminTab").style.display = "block";
+          adminTab.style.display = 'block';
+        } else {
+          adminTab.style.display = 'none';
         }
         
         resetLogoutTimer();  
@@ -473,12 +584,19 @@
         if(users[loggedUser].isAdmin) {
           loadAdminNews();
         }
+        
+        console.log("Automaticky přihlášen:", loggedUser, "Is admin:", users[loggedUser].isAdmin);
       }
       
       // Načíst novinky z localStorage
       const savedNews = localStorage.getItem('sfriNews');
       if(savedNews) {
-        news = JSON.parse(savedNews);
+        try {
+          news = JSON.parse(savedNews);
+        } catch(e) {
+          console.error("Chyba při načítání novinek:", e);
+          news = [];
+        }
       }
     }  
     
