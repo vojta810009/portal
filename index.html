@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">  
 <head>  
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">    
-  <title>SFRI.gov</title>  
+  <title>SFRI.gov - Portál vlády</title>  
   <link href="./styl.css" rel="stylesheet" type="text/css">  
   <link href="style-portal.css" rel="stylesheet" type="text/css">  
   <link href="../datatables/datatables.min.css" rel="stylesheet" type="text/css">  
@@ -11,155 +10,478 @@
   <script src="../datatables/datatables.min.js"></script>  
   <style>  
     #portalContent { display: none; }  
+    #adminContent { display: none; }
     #logoutTimer { font-weight: bold; color: yellow; }  
+    #newsSection { margin: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px; }
+    .news-item { margin-bottom: 20px; padding: 15px; background: white; border-radius: 5px; border: 1px solid #ddd; }
+    .news-image { max-width: 300px; max-height: 200px; margin: 10px 0; }
+    .news-text { margin-top: 10px; font-size: 14px; }
+    .news-date { font-size: 12px; color: #666; margin-bottom: 5px; }
+    #adminUpload { margin: 20px; padding: 20px; background: #f0f0f0; border-radius: 5px; }
+    .admin-controls { margin-top: 10px; }
+    .delete-btn { background: red; color: white; border: none; padding: 3px 8px; cursor: pointer; margin-left: 10px; }
+    .tabs { display: flex; margin: 20px; }
+    .tab { padding: 10px 20px; background: #e0e0e0; cursor: pointer; margin-right: 5px; }
+    .tab.active { background: #c00; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
   </style>  
 </head>  
-<body role="application">  <!-- LOGIN SEKCE -->  <div id="loginSection" class="umisteni">  
-  <div class="lista"></div>  
-  <div class="center">  
-    <div class="telo">  
-      <h1 style="margin-bottom: 0;">Vítá Vás</h1>  
-      <img class="logo" style="width: 250px;" src="SFRI-male.png">  
-      <h3 style="margin-bottom: 0;font-style: italic;">"Socialistická Federativní Republika IngLAND."</h3>  
-      <table style="margin-top: 20px;margin-left: auto;margin-right: auto;padding: 10px 34px;background-color: #fff;border-radius: 9px;border: 1px solid #cecece;">  
-        <tbody>  
-          <tr><td colspan="2" style="text-align: center;"><h2>ePortál občana</h2></td></tr>  
-          <tr><td>ID občana:</td><td><input type="text" id="username" style="font-size: 20px;width: 135px;"></td></tr>  
-          <tr><td>Heslo:</td><td><input type="password" id="password" style="font-size: 20px;width: 135px;"></td></tr>  
-          <tr><td></td><td><button onclick="checkLogin()">Přihlásit se</button></td></tr>  
-        </tbody>  
-      </table>  
-    </div>  
-  </div>  
-</div>  <!-- PORTÁL SEKCE -->  <div id="portalContent">    <div class="lista">  
-    <table style="text-align: center; color: #fff; margin-left:auto; margin-right:auto; height: inherit;">  
-      <tbody>  
-        <tr>  
-          <td>Přihlášen jako: <b id="userFullName">---</b></td>  
-          <td style="padding-left:15px;">Odhlášení za: <span id="logoutTimer">--:--</span></td>  
-          <td style="padding-left:10px;">  
-            <form action="" style="margin: 0;" method="POST">  
-              <input type="submit" name="tym" class="podpolozka_aktivni" value="PŘEPNOUT na TÝMOVÝ účet">  
-            </form>  
-          </td>  
-          <td style="padding-left:10px;">  
-            <a href="#" onclick="logout()"><input type="submit" value="Odhlášení"></a>  
-          </td>  
-        </tr>  
-      </tbody>  
-    </table>  
-  </div>    <div class="strana">  
-    <div class="menu-main">  
-      <div class="nazev_strany" id="mainPageTitle">Úvodní strana portálu</div>  
-      <div id="widgets">  
-        <div class="box_nastaveni" id="box_osobni-informace">  
-          <h2 onclick="box('osobni-informace');">Osobní informace<div class="sipka"></div></h2>  
-          <div class="objekt">  
-            <table>  
-              <tbody>  
-                <tr><td>Přihlášen jako:</td><td><b id="userName">---</b></td></tr>  
-                <tr><td>Člen týmu:</td><td><b id="userTeam">---</b></td></tr>  
-                <tr><td>Spolučlenové:</td><td><b id="userTeamMembers">---</b></td></tr>  
-                <tr><td colspan="2" style="text-align: center;">FINANČNÍ STAV(jsi socka)</td></tr>  
-                <tr>  
-                  <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div id="personalBalance">---</div><div id="personalBlock">---</div></div></td>  
-                  <td style="text-align: center;">Týmový účet: <br><div class="KIng" style="margin: auto;"><div id="teamBalance">---</div><div id="teamBlock">---</div></div></td>  
-                </tr>  
-                <tr><td>Poslední přihlášení do administrace: <b>09.08.2025 09:52</b></td></tr>  
-              </tbody>  
-            </table>  
-          </div>  
-        </div>   
+<body role="application">
+  
+  <!-- LOGIN SEKCE -->  
+  <div id="loginSection" class="umisteni">  
+    <div class="lista"></div>  
+    <div class="center">  
+      <div class="telo">  
+        <h1 style="margin-bottom: 0;">Vítá Vás</h1>  
+        <img class="logo" style="width: 250px;" src="SFRI-male.png">  
+        <h3 style="margin-bottom: 0;font-style: italic;">"Socialistická Federativní Republika IngLAND."</h3>  
+        <table style="margin-top: 20px;margin-left: auto;margin-right: auto;padding: 10px 34px;background-color: #fff;border-radius: 9px;border: 1px solid #cecece;">  
+          <tbody>  
+            <tr><td colspan="2" style="text-align: center;"><h2>Portál vlády SFRI</h2></td></tr>  
+            <tr><td>ID občana:</td><td><input type="text" id="username" style="font-size: 20px;width: 135px;"></td></tr>  
+            <tr><td>Heslo:</td><td><input type="password" id="password" style="font-size: 20px;width: 135px;"></td></tr>  
+            <tr><td></td><td><button onclick="checkLogin()">Přihlásit se</button></td></tr>  
+          </tbody>  
+        </table>  
       </div>  
     </div>  
-  </div>  </div>  <script>  
-  const users = {  
-    "MaybeOceann": {  
-      fullName: "Soudruh Štěpán A. Haas  z týmu Vláda SFRI",  
-      userName: "Maybe_Oceann ",  
-      team: "Vláda SFRI",  
-      teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
-      personalBalance: "57878946874684 ILD",  
-      personalBlock: "Blokace: 0 ILD",  
-      teamBalance: "∞ ILD",  
-      teamBlock: "Blokace: 0 ILD",  
-      password: "petra6058"  
-    },  
-    "Vojta_Fotograf": {  
-      fullName: "Vojta_Fotograf  z týmu Vláda SFRI",  
-      userName: "Vojta_Fotograf ",  
-      team: "Vláda SFRI",  
-      teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
-      personalBalance: "4856486764864784186 ILD",  
-      personalBlock: "Blokace: 0 ILD",  
-      teamBalance: "∞ ILD",  
-      teamBlock: "Blokace: 0 ILD",  
-      password: "Vojta669*4"  
-    },  
-    "SamV": {  
-      fullName: "Samuel Veselý  z týmu Vláda SFRI",  
-      userName: "Samuel Veselý ",  
-      team: "Vláda SFRI",  
-      teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
-      personalBalance: "463841896966355634 ILD",  
-      personalBlock: "Blokace: 0 ILD",  
-      teamBalance: "∞ ILD",  
-      teamBlock: "Blokace: 0 ILD",  
-      password: "123456"  
+  </div>
+  
+  <!-- PORTÁL VLÁDY SEKCE -->  
+  <div id="portalContent">
+    <div class="lista">  
+      <table style="text-align: center; color: #fff; margin-left:auto; margin-right:auto; height: inherit;">  
+        <tbody>  
+          <tr>  
+            <td>Přihlášen jako: <b id="userFullName">---</b></td>  
+            <td style="padding-left:15px;">Odhlášení za: <span id="logoutTimer">--:--</span></td>  
+            <td style="padding-left:10px;">
+              <button class="podpolozka_aktivni" onclick="switchToTab('news')">PORTÁL VLÁDY</button>
+            </td>  
+            <td style="padding-left:10px;">  
+              <a href="#" onclick="logout()"><input type="submit" value="Odhlášení"></a>  
+            </td>  
+          </tr>  
+        </tbody>  
+      </table>  
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" onclick="switchToTab('personal')">Osobní informace</div>
+      <div class="tab" onclick="switchToTab('news')">Portál vlády</div>
+      <div class="tab" id="adminTab" onclick="switchToTab('admin')" style="display: none;">Administrace</div>
+    </div>
+    
+    <!-- OSOBNÍ INFORMACE -->
+    <div id="personalTab" class="tab-content active">
+      <div class="strana">  
+        <div class="menu-main">  
+          <div class="nazev_strany" id="mainPageTitle">Osobní informace</div>  
+          <div id="widgets">  
+            <div class="box_nastaveni" id="box_osobni-informace">  
+              <h2 onclick="box('osobni-informace');">Osobní informace<div class="sipka"></div></h2>  
+              <div class="objekt">  
+                <table>  
+                  <tbody>  
+                    <tr><td>Přihlášen jako:</td><td><b id="userName">---</b></td></tr>  
+                    <tr><td>Člen týmu:</td><td><b id="userTeam">---</b></td></tr>  
+                    <tr><td>Spolučlenové:</td><td><b id="userTeamMembers">---</b></td></tr>  
+                    <tr><td colspan="2" style="text-align: center;">FINANČNÍ STAV</td></tr>  
+                    <tr>  
+                      <td style="text-align: center;">Osobní účet: <br><div class="KIng" style="margin: auto;"><div id="personalBalance">---</div><div id="personalBlock">---</div></div></td>  
+                      <td style="text-align: center;">Týmový účet: <br><div class="KIng" style="margin: auto;"><div id="teamBalance">---</div><div id="teamBlock">---</div></div></td>  
+                    </tr>  
+                    <tr><td>Poslední přihlášení do administrace: <b id="lastLogin">09.08.2025 09:52</b></td></tr>  
+                  </tbody>  
+                </table>  
+              </div>  
+            </div>   
+          </div>  
+        </div>  
+      </div>
+    </div>
+    
+    <!-- PORTÁL VLÁDY - NOVINKY -->
+    <div id="newsTab" class="tab-content">
+      <div class="strana">
+        <div class="menu-main">
+          <div class="nazev_strany">Portál vlády - Oficiální zprávy</div>
+          <div id="newsSection">
+            <!-- Novinky se načtou dynamicky -->
+            <div id="newsContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ADMINISTRACE -->
+    <div id="adminTabContent" class="tab-content">
+      <div class="strana">
+        <div class="menu-main">
+          <div class="nazev_strany">Administrace portálu vlády</div>
+          <div id="adminUpload">
+            <h3>Nahrát novou zprávu s fotkou</h3>
+            <form id="newsUploadForm">
+              <div>
+                <label for="newsTitle">Nadpis zprávy:</label><br>
+                <input type="text" id="newsTitle" style="width: 300px; margin-bottom: 10px;">
+              </div>
+              <div>
+                <label for="newsText">Text zprávy:</label><br>
+                <textarea id="newsText" rows="5" style="width: 100%; max-width: 500px; margin-bottom: 10px;"></textarea>
+              </div>
+              <div>
+                <label for="newsImage">Vybrat fotku:</label><br>
+                <input type="file" id="newsImage" accept="image/*" style="margin-bottom: 10px;">
+              </div>
+              <button type="button" onclick="uploadNews()">Nahrát zprávu</button>
+            </form>
+            
+            <h3 style="margin-top: 30px;">Spravovat existující zprávy</h3>
+            <div id="adminNewsList">
+              <!-- Seznam zpráv pro administraci -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+  <script>  
+    // Databáze uživatelů
+    const users = {  
+      "MaybeOceann": {  
+        fullName: "Soudruh Štěpán A. Haas z týmu Vláda SFRI",  
+        userName: "Maybe_Oceann",  
+        team: "Vláda SFRI",  
+        teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
+        personalBalance: "57878946874684 ILD",  
+        personalBlock: "Blokace: 0 ILD",  
+        teamBalance: "∞ ILD",  
+        teamBlock: "Blokace: 0 ILD",  
+        password: "petra6058",
+        isAdmin: false
+      },  
+      "Vojta_Fotograf": {  
+        fullName: "Vojta_Fotograf z týmu Vláda SFRI",  
+        userName: "Vojta_Fotograf",  
+        team: "Vláda SFRI",  
+        teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
+        personalBalance: "4856486764864784186 ILD",  
+        personalBlock: "Blokace: 0 ILD",  
+        teamBalance: "∞ ILD",  
+        teamBlock: "Blokace: 0 ILD",  
+        password: "Vojta669*4",
+        isAdmin: false
+      },  
+      "SamV": {  
+        fullName: "Samuel Veselý z týmu Vláda SFRI",  
+        userName: "Samuel Veselý",  
+        team: "Vláda SFRI",  
+        teamMembers: "Vojtěch Líkař, Samuel Veselý, Štěpán A. Haas",  
+        personalBalance: "463841896966355634 ILD",  
+        personalBlock: "Blokace: 0 ILD",  
+        teamBalance: "∞ ILD",  
+        teamBlock: "Blokace: 0 ILD",  
+        password: "123456",
+        isAdmin: false
+      },
+      "admin": {
+        fullName: "Administrátor portálu vlády SFRI",
+        userName: "admin",
+        team: "Administrace",
+        teamMembers: "Pouze administrátor",
+        personalBalance: "999999999 ILD",
+        personalBlock: "Blokace: 0 ILD",
+        teamBalance: "∞ ILD",
+        teamBlock: "Blokace: 0 ILD",
+        password: "admin123",
+        isAdmin: true
+      }
+    };
+    
+    // Databáze novinek (ukládáme do localStorage)
+    let news = JSON.parse(localStorage.getItem('sfriNews')) || [
+      {
+        id: 1,
+        title: "Vláda SFRI schválila nový rozpočet",
+        text: "Vláda Socialistické Federativní Republiky IngLAND dnes schválila rozpočet na příští rok s důrazem na sociální programy.",
+        image: null,
+        date: "2024-01-15 10:30",
+        author: "admin"
+      },
+      {
+        id: 2,
+        title: "Slavnostní otevření nové školy",
+        text: "Dnes byla slavnostně otevřena nová škola v hlavním městě. Škola bude sloužit 500 studentům.",
+        image: null,
+        date: "2024-01-10 14:00",
+        author: "admin"
+      }
+    ];
+    
+    let currentUser = null;
+    let logoutTime = 600; // 10 minut v sekundách
+    let timerInterval;
+    
+    function checkLogin() {  
+      let user = document.getElementById("username").value;  
+      let pass = document.getElementById("password").value;  
+      
+      if(users[user] && users[user].password === pass) {  
+        currentUser = user;
+        localStorage.setItem("loggedInUser", user);  
+        localStorage.setItem("lastLogin", new Date().toLocaleString('cs-CZ'));
+        showPortalForUser(user);  
+        document.getElementById("loginSection").style.display = "none";  
+        document.getElementById("portalContent").style.display = "block";
+        
+        if(users[user].isAdmin) {
+          document.getElementById("adminTab").style.display = "block";
+        }
+        
+        resetLogoutTimer();  
+        loadNews();
+        if(users[user].isAdmin) {
+          loadAdminNews();
+        }
+      } else {  
+        alert("Neplatné přihlašovací údaje!");  
+      }  
     }  
-  };  
-  
-  function checkLogin() {  
-    let user = document.getElementById("username").value;  
-    let pass = document.getElementById("password").value;  
-  
-    if(users[user] && users[user].password === pass) {  
-      localStorage.setItem("loggedInUser", user);  
-      showPortalForUser(user);  
-      document.getElementById("loginSection").style.display = "none";  
-      document.getElementById("portalContent").style.display = "block";  
-      resetLogoutTimer();  
-    } else {  
-      alert("Neplatné přihlašovací údaje!");  
+    
+    function showPortalForUser(user) {  
+      const u = users[user];  
+      document.getElementById("userFullName").innerText = u.fullName;  
+      document.getElementById("userName").innerText = u.userName;  
+      document.getElementById("userTeam").innerText = u.team;  
+      document.getElementById("userTeamMembers").innerText = u.teamMembers;  
+      document.getElementById("personalBalance").innerText = u.personalBalance;  
+      document.getElementById("personalBlock").innerText = u.personalBlock;  
+      document.getElementById("teamBalance").innerText = u.teamBalance;  
+      document.getElementById("teamBlock").innerText = u.teamBlock;
+      
+      const lastLogin = localStorage.getItem("lastLogin") || "09.08.2025 09:52";
+      document.getElementById("lastLogin").innerText = lastLogin;
     }  
-  }  
-  
-  function showPortalForUser(user) {  
-    const u = users[user];  
-    document.getElementById("userFullName").innerText = u.fullName;  
-    document.getElementById("userName").innerText = u.userName;  
-    document.getElementById("userTeam").innerText = u.team;  
-    document.getElementById("userTeamMembers").innerText = u.teamMembers;  
-    document.getElementById("personalBalance").innerText = u.personalBalance;  
-    document.getElementById("personalBlock").innerText = u.personalBlock;  
-    document.getElementById("teamBalance").innerText = u.teamBalance;  
-    document.getElementById("teamBlock").innerText = u.teamBlock;  
-  }  
-  
-  function logout() {  
-    localStorage.removeItem("loggedInUser");  
-    document.getElementById("portalContent").style.display = "none";  
-    document.getElementById("loginSection").style.display = "block";  
-    document.getElementById("logoutTimer").innerText = "--:--";  
-    clearInterval(timerInterval);  
-  }  
-  
- 
-  
-  window.onload = function() {  
-    let loggedUser = localStorage.getItem("loggedInUser");  
-    if(loggedUser && users[loggedUser]) {  
-      showPortalForUser(loggedUser);  
-      document.getElementById("loginSection").style.display = "none";  
-      document.getElementById("portalContent").style.display = "block";  
-      resetLogoutTimer();  
+    
+    function switchToTab(tabName) {
+      // Skrýt všechny záložky
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Deaktivovat všechny taby
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Zobrazit vybranou záložku
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      
+      // Aktivovat odpovídající tab
+      document.querySelectorAll('.tab').forEach(tab => {
+        if(tab.textContent.includes(tabName === 'personal' ? 'Osobní' : 
+                                   tabName === 'news' ? 'Portál' : 
+                                   'Administrace')) {
+          tab.classList.add('active');
+        }
+      });
+      
+      // Pokud přepínáme na administraci, načtěme data
+      if(tabName === 'admin' && users[currentUser].isAdmin) {
+        loadAdminNews();
+      }
+    }
+    
+    function loadNews() {
+      const container = document.getElementById('newsContainer');
+      container.innerHTML = '';
+      
+      if(news.length === 0) {
+        container.innerHTML = '<p>Zatím nebyly zveřejněny žádné zprávy.</p>';
+        return;
+      }
+      
+      // Seřadit novinky od nejnovější
+      const sortedNews = [...news].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      sortedNews.forEach(item => {
+        const newsDiv = document.createElement('div');
+        newsDiv.className = 'news-item';
+        newsDiv.innerHTML = `
+          <div class="news-date">${item.date} | Autor: ${item.author}</div>
+          <h3>${item.title}</h3>
+          ${item.image ? `<img src="${item.image}" class="news-image" alt="${item.title}">` : ''}
+          <div class="news-text">${item.text}</div>
+        `;
+        container.appendChild(newsDiv);
+      });
+    }
+    
+    function loadAdminNews() {
+      const container = document.getElementById('adminNewsList');
+      container.innerHTML = '';
+      
+      if(news.length === 0) {
+        container.innerHTML = '<p>Žádné zprávy k zobrazení.</p>';
+        return;
+      }
+      
+      // Seřadit novinky od nejnovější
+      const sortedNews = [...news].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      sortedNews.forEach(item => {
+        const newsDiv = document.createElement('div');
+        newsDiv.className = 'news-item';
+        newsDiv.innerHTML = `
+          <div class="news-date">${item.date} | ID: ${item.id} | Autor: ${item.author}</div>
+          <h3>${item.title}</h3>
+          ${item.image ? `<img src="${item.image}" class="news-image" style="max-width: 150px;" alt="${item.title}">` : ''}
+          <div class="news-text">${item.text}</div>
+          <div class="admin-controls">
+            <button class="delete-btn" onclick="deleteNews(${item.id})">Smazat</button>
+          </div>
+        `;
+        container.appendChild(newsDiv);
+      });
+    }
+    
+    function uploadNews() {
+      if(!currentUser || !users[currentUser].isAdmin) {
+        alert('Pouze administrátor může nahrávat zprávy!');
+        return;
+      }
+      
+      const title = document.getElementById('newsTitle').value;
+      const text = document.getElementById('newsText').value;
+      const imageInput = document.getElementById('newsImage');
+      
+      if(!title || !text) {
+        alert('Vyplňte nadpis a text zprávy!');
+        return;
+      }
+      
+      // Najít nejvyšší ID
+      const maxId = news.length > 0 ? Math.max(...news.map(n => n.id)) : 0;
+      const newId = maxId + 1;
+      
+      const newItem = {
+        id: newId,
+        title: title,
+        text: text,
+        image: null,
+        date: new Date().toLocaleString('cs-CZ'),
+        author: currentUser
+      };
+      
+      // Zpracování obrázku pokud je nahrán
+      if(imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          newItem.image = e.target.result;
+          addNewsItem(newItem);
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        addNewsItem(newItem);
+      }
+    }
+    
+    function addNewsItem(newItem) {
+      news.push(newItem);
+      localStorage.setItem('sfriNews', JSON.stringify(news));
+      
+      // Reset formuláře
+      document.getElementById('newsTitle').value = '';
+      document.getElementById('newsText').value = '';
+      document.getElementById('newsImage').value = '';
+      
+      // Přenačíst zprávy
+      loadNews();
+      loadAdminNews();
+      
+      alert('Zpráva byla úspěšně nahrána!');
+    }
+    
+    function deleteNews(id) {
+      if(!confirm('Opravdu chcete smazat tuto zprávu?')) return;
+      
+      news = news.filter(item => item.id !== id);
+      localStorage.setItem('sfriNews', JSON.stringify(news));
+      
+      loadNews();
+      loadAdminNews();
+      alert('Zpráva byla smazána.');
+    }
+    
+    function logout() {  
+      localStorage.removeItem("loggedInUser");  
+      document.getElementById("portalContent").style.display = "none";  
+      document.getElementById("loginSection").style.display = "block";  
+      document.getElementById("logoutTimer").innerText = "--:--";  
+      clearInterval(timerInterval);
+      currentUser = null;
     }  
-  }  
-  
-  function box(id) {  
-    var el = document.getElementById('box_' + id);  
-    if (el.className === 'box_nastaveni') el.className = 'box_nastaveni closed';  
-    else el.className = 'box_nastaveni';  
-  }  
-</script>  </body>  
+    
+    function resetLogoutTimer() {
+      logoutTime = 600; // Reset na 10 minut
+      clearInterval(timerInterval);
+      updateLogoutTimer();
+      
+      timerInterval = setInterval(function() {
+        logoutTime--;
+        updateLogoutTimer();
+        
+        if(logoutTime <= 0) {
+          logout();
+          alert('Byl jste automaticky odhlášen z důvodu nečinnosti.');
+        }
+      }, 1000);
+    }
+    
+    function updateLogoutTimer() {
+      const minutes = Math.floor(logoutTime / 60);
+      const seconds = logoutTime % 60;
+      document.getElementById('logoutTimer').innerText = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    function box(id) {  
+      var el = document.getElementById('box_' + id);  
+      if (el.className === 'box_nastaveni') el.className = 'box_nastaveni closed';  
+      else el.className = 'box_nastaveni';  
+    }  
+    
+    window.onload = function() {  
+      let loggedUser = localStorage.getItem("loggedInUser");  
+      if(loggedUser && users[loggedUser]) {  
+        currentUser = loggedUser;
+        showPortalForUser(loggedUser);  
+        document.getElementById("loginSection").style.display = "none";  
+        document.getElementById("portalContent").style.display = "block";
+        
+        if(users[loggedUser].isAdmin) {
+          document.getElementById("adminTab").style.display = "block";
+        }
+        
+        resetLogoutTimer();  
+        loadNews();
+        if(users[loggedUser].isAdmin) {
+          loadAdminNews();
+        }
+      }
+      
+      // Načíst novinky z localStorage
+      const savedNews = localStorage.getItem('sfriNews');
+      if(savedNews) {
+        news = JSON.parse(savedNews);
+      }
+    }  
+    
+  </script>  
+</body>  
 </html>
