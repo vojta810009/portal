@@ -276,8 +276,6 @@
       <input type="text" id="username" placeholder="ID občana">
       <input type="password" id="password" placeholder="Heslo">
       <button onclick="checkLogin()">Přihlásit se</button>
-      
-      <!-- ODSTRANĚN TEXT S HESLY -->
     </div>
   </div>
   
@@ -286,8 +284,8 @@
     <!-- HORNÍ LIŠTA -->
     <div class="top-bar">
       <div class="top-bar-info">
-        <div>Přihlášen jako: <strong id="userFullName">---</strong></div>
-        <div>Odhlášení za: <strong id="logoutTimer">--:--</strong></div>
+        Přihlášen jako: <strong id="userFullName">---</strong>
+        | Odhlášení za: <strong id="logoutTimer">--:--</strong>
       </div>
       <div class="top-bar-buttons">
         <button onclick="switchToTab('news')">Portál vlády</button>
@@ -297,9 +295,9 @@
     
     <!-- NAVIGAČNÍ ZÁLOŽKY -->
     <div class="tabs">
-      <div class="tab active" onclick="switchToTab('personal')">Osobní informace</div>
-      <div class="tab" onclick="switchToTab('news')">Portál vlády</div>
-      <div class="tab" id="adminTab" style="display: none;" onclick="switchToTab('admin')">Administrace</div>
+      <div class="tab active" data-tab="personal" onclick="switchToTab('personal')">Osobní informace</div>
+      <div class="tab" data-tab="news" onclick="switchToTab('news')">Portál vlády</div>
+      <div class="tab" data-tab="admin" id="adminTabButton" style="display: none;" onclick="switchToTab('admin')">Administrace</div>
     </div>
     
     <!-- STATUS ZPRÁVY -->
@@ -337,9 +335,7 @@
     <div id="newsTab" class="tab-content">
       <div class="news-section">
         <h2>Oficiální zprávy vlády SFRI</h2>
-        <div id="newsContainer">
-          <!-- Novinky se načtou dynamicky -->
-        </div>
+        <div id="newsContainer"></div>
       </div>
     </div>
     
@@ -356,9 +352,7 @@
         </div>
         
         <h3>Správa existujících zpráv</h3>
-        <div id="adminNewsList">
-          <!-- Zprávy pro správu -->
-        </div>
+        <div id="adminNewsList"></div>
       </div>
     </div>
     
@@ -452,11 +446,11 @@
         document.getElementById('portalContent').style.display = 'block';
         
         // ZOBRAZIT ADMIN TAB POKUD JE ADMIN
-        const adminTab = document.getElementById('adminTab');
+        const adminTabButton = document.getElementById('adminTabButton');
         if (users[username].isAdmin) {
-          adminTab.style.display = 'block';
+          adminTabButton.style.display = 'block';
         } else {
-          adminTab.style.display = 'none';
+          adminTabButton.style.display = 'none';
         }
         
         resetLogoutTimer();
@@ -491,49 +485,25 @@
     }
     
     function switchToTab(tabName) {
-      console.log('Přepínám na záložku:', tabName);
-      
-      // KONTROLA PRO ADMINISTRACI
       if (tabName === 'admin') {
-        if (!currentUser || !users[currentUser] || !users[currentUser].isAdmin) {
-          showStatus('Přístup zamítnut! Nemáte administrátorská oprávnění.', 'error');
+        if (!currentUser || !users[currentUser].isAdmin) {
+          showStatus('Přístup zamítnut!', 'error');
           return;
         }
       }
       
-      // SKRÝT VŠECHNY ZÁLOŽKY
-      const allTabs = document.querySelectorAll('.tab-content');
-      allTabs.forEach(tab => {
-        tab.classList.remove('active');
-      });
+      document.querySelectorAll('.tab-content')
+        .forEach(t => t.classList.remove('active'));
       
-      // DEAKTIVOVAT VŠECHNY TABS
-      const allTabButtons = document.querySelectorAll('.tab');
-      allTabButtons.forEach(tab => {
-        tab.classList.remove('active');
-      });
+      document.querySelectorAll('.tab')
+        .forEach(t => t.classList.remove('active'));
       
-      // ZOBRAZIT VYBRANOU ZÁLOŽKU
-      const targetTab = document.getElementById(tabName + 'Tab');
-      if (targetTab) {
-        targetTab.classList.add('active');
-        
-        // AKTIVOVAT TLAČÍTKO ZÁLOŽKY
-        allTabButtons.forEach(tab => {
-          if (tab.textContent.trim() === 'Osobní informace' && tabName === 'personal') {
-            tab.classList.add('active');
-          } else if (tab.textContent.trim() === 'Portál vlády' && tabName === 'news') {
-            tab.classList.add('active');
-          } else if (tab.textContent.trim() === 'Administrace' && tabName === 'admin') {
-            tab.classList.add('active');
-          }
-        });
-        
-        // NAČÍST DATA PRO ADMINISTRACI
-        if (tabName === 'admin' && users[currentUser] && users[currentUser].isAdmin) {
-          loadAdminNews();
-        }
-      }
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      
+      document.querySelector(`.tab[data-tab="${tabName}"]`)
+        .classList.add('active');
+      
+      if (tabName === 'admin') loadAdminNews();
     }
     
     function loadNews() {
@@ -716,11 +686,11 @@
         document.getElementById('portalContent').style.display = 'block';
         
         // ZOBRAZIT ADMIN TAB POKUD JE ADMIN
-        const adminTab = document.getElementById('adminTab');
+        const adminTabButton = document.getElementById('adminTabButton');
         if (users[savedUser].isAdmin) {
-          adminTab.style.display = 'block';
+          adminTabButton.style.display = 'block';
         } else {
-          adminTab.style.display = 'none';
+          adminTabButton.style.display = 'none';
         }
         
         resetLogoutTimer();
