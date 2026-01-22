@@ -59,6 +59,7 @@
       background: #e0e0e0; 
       padding: 0 20px;
       border-bottom: 2px solid #c00;
+      flex-wrap: wrap;
     }
     
     .tab { 
@@ -68,6 +69,7 @@
       margin-right: 2px; 
       border-radius: 5px 5px 0 0;
       font-weight: bold;
+      white-space: nowrap;
     }
     
     .tab:hover { 
@@ -138,7 +140,25 @@
       line-height: 1.5;
     }
     
-    /* ADMINISTRACE */
+    .news-attachment {
+      margin-top: 10px;
+      padding: 8px;
+      background: #e9e9e9;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    
+    .news-attachment a {
+      color: #c00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .news-attachment a:hover {
+      text-decoration: underline;
+    }
+    
+    /* ADMINISTRACE - OBECNÉ */
     .admin-section {
       background: white;
       padding: 20px;
@@ -154,6 +174,9 @@
     }
     
     .admin-form input[type="text"],
+    .admin-form input[type="password"],
+    .admin-form input[type="number"],
+    .admin-form select,
     .admin-form textarea {
       width: 100%;
       max-width: 500px;
@@ -162,6 +185,7 @@
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 16px;
+      box-sizing: border-box;
     }
     
     .admin-form textarea {
@@ -178,10 +202,103 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 16px;
+      margin-right: 10px;
+      margin-bottom: 5px;
     }
     
     .admin-form button:hover {
       background: #a00;
+    }
+    
+    .admin-form button.secondary {
+      background: #666;
+    }
+    
+    .admin-form button.secondary:hover {
+      background: #555;
+    }
+    
+    /* ADMIN - SPRÁVA ÚČTŮ */
+    .accounts-list {
+      margin-top: 20px;
+    }
+    
+    .account-item {
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .account-info {
+      flex: 1;
+    }
+    
+    .account-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    /* TRANSAKCE */
+    .transactions-section {
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .transaction-item {
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #f9f9f9;
+    }
+    
+    .transaction-pending {
+      border-left: 4px solid #ff9800;
+    }
+    
+    .transaction-approved {
+      border-left: 4px solid #4caf50;
+    }
+    
+    .transaction-rejected {
+      border-left: 4px solid #f44336;
+    }
+    
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .transaction-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .transaction-actions button {
+      padding: 5px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-approve {
+      background: #4caf50;
+      color: white;
+    }
+    
+    .btn-reject {
+      background: #f44336;
+      color: white;
     }
     
     /* LOGIN */
@@ -260,6 +377,45 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
+    
+    /* TABULKY */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    
+    .data-table th {
+      background: #8b0000;
+      color: white;
+      padding: 10px;
+      text-align: left;
+    }
+    
+    .data-table td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .data-table tr:hover {
+      background: #f5f5f5;
+    }
+    
+    /* FILTROVÁNÍ */
+    .filter-section {
+      background: #f9f9f9;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+    
+    .filter-section input,
+    .filter-section select {
+      padding: 8px;
+      margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
   </style>  
 </head>  
 <body role="application">
@@ -297,6 +453,7 @@
     <div class="tabs">
       <div class="tab active" data-tab="personal" onclick="switchToTab('personal')">Osobní informace</div>
       <div class="tab" data-tab="news" onclick="switchToTab('news')">Portál vlády</div>
+      <div class="tab" data-tab="transactions" id="transactionsTabButton" onclick="switchToTab('transactions')">Transakce</div>
       <div class="tab" data-tab="admin" id="adminTabButton" style="display: none;" onclick="switchToTab('admin')">Administrace</div>
     </div>
     
@@ -339,20 +496,108 @@
       </div>
     </div>
     
+    <!-- TRANSAKCE -->
+    <div id="transactionsTab" class="tab-content">
+      <div class="transactions-section">
+        <h2>Správa transakcí</h2>
+        <div class="filter-section">
+          <select id="transactionFilter" onchange="filterTransactions()">
+            <option value="all">Všechny transakce</option>
+            <option value="pending">Čekající na schválení</option>
+            <option value="approved">Schválené</option>
+            <option value="rejected">Zamítnuté</option>
+          </select>
+          <button onclick="showNewTransactionForm()" style="background: #4caf50;">+ Nová transakce</button>
+        </div>
+        
+        <!-- Formulář pro novou transakci -->
+        <div id="newTransactionForm" class="admin-form" style="display: none;">
+          <h3>Návrh nové transakce</h3>
+          <input type="text" id="transactionTitle" placeholder="Název transakce">
+          <textarea id="transactionDescription" placeholder="Popis transakce"></textarea>
+          <input type="number" id="transactionAmount" placeholder="Částka (ILD)" min="1">
+          <select id="transactionRecipient">
+            <option value="">Vyberte příjemce</option>
+          </select>
+          <button onclick="submitTransaction()">Odeslat ke schválení</button>
+          <button onclick="hideNewTransactionForm()" class="secondary">Zrušit</button>
+        </div>
+        
+        <!-- Seznam transakcí -->
+        <div id="transactionsContainer"></div>
+      </div>
+    </div>
+    
     <!-- ADMINISTRACE -->
     <div id="adminTab" class="tab-content">
       <div class="admin-section">
         <h2>Administrace portálu vlády</h2>
         
-        <div class="admin-form">
-          <h3>Nahrát novou zprávu</h3>
-          <input type="text" id="newsTitle" placeholder="Nadpis zprávy">
-          <textarea id="newsText" placeholder="Text zprávy"></textarea>
-          <button onclick="uploadNews()">Zveřejnit zprávu</button>
+        <div class="tabs" style="background: transparent; border-bottom: 1px solid #ddd; margin-bottom: 20px;">
+          <div class="tab active" data-admin-tab="users" onclick="switchAdminTab('users')">Správa účtů</div>
+          <div class="tab" data-admin-tab="news" onclick="switchAdminTab('news')">Správa zpráv</div>
+          <div class="tab" data-admin-tab="transactions" onclick="switchAdminTab('transactions')">Správa transakcí</div>
         </div>
         
-        <h3>Správa existujících zpráv</h3>
-        <div id="adminNewsList"></div>
+        <!-- SPRÁVA ÚČTŮ -->
+        <div id="adminUsersTab" class="admin-tab-content active">
+          <h3>Správa uživatelských účtů</h3>
+          
+          <div class="admin-form">
+            <h4>Vytvořit nový účet</h4>
+            <input type="text" id="newUsername" placeholder="Uživatelské jméno">
+            <input type="password" id="newPassword" placeholder="Heslo">
+            <input type="text" id="newFullName" placeholder="Celé jméno">
+            <input type="text" id="newTeam" placeholder="Tým">
+            <input type="text" id="newTeamMembers" placeholder="Členové týmu (oddělte čárkou)">
+            <input type="number" id="newBalance" placeholder="Počáteční zůstatek (ILD)">
+            <select id="newIsAdmin">
+              <option value="false">Běžný uživatel</option>
+              <option value="true">Administrátor</option>
+            </select>
+            <button onclick="createUser()">Vytvořit účet</button>
+          </div>
+          
+          <h4>Existující účty</h4>
+          <div class="accounts-list" id="accountsList"></div>
+        </div>
+        
+        <!-- SPRÁVA ZPRÁV -->
+        <div id="adminNewsTab" class="admin-tab-content">
+          <h3>Správa zpráv</h3>
+          
+          <div class="admin-form">
+            <h4>Nahrát novou zprávu</h4>
+            <input type="text" id="newsTitle" placeholder="Nadpis zprávy">
+            <textarea id="newsText" placeholder="Text zprávy"></textarea>
+            <div>
+              <label for="newsAttachment">Příloha (volitelné):</label>
+              <input type="file" id="newsAttachment" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
+              <small>Podporované formáty: PDF, DOC, TXT, JPG, PNG</small>
+            </div>
+            <button onclick="uploadNews()">Zveřejnit zprávu</button>
+          </div>
+          
+          <h4>Existující zprávy</h4>
+          <div id="adminNewsList"></div>
+        </div>
+        
+        <!-- SPRÁVA TRANSAKCÍ -->
+        <div id="adminTransactionsTab" class="admin-tab-content">
+          <h3>Správa transakcí</h3>
+          
+          <div class="filter-section">
+            <select id="adminTransactionFilter" onchange="filterAdminTransactions()">
+              <option value="all">Všechny transakce</option>
+              <option value="pending">Čekající na schválení</option>
+              <option value="approved">Schválené</option>
+              <option value="rejected">Zamítnuté</option>
+            </select>
+          </div>
+          
+          <div id="adminTransactionsList"></div>
+        </div>
+        
       </div>
     </div>
     
@@ -366,10 +611,10 @@
         userName: "admin",
         team: "Administrace",
         teamMembers: "Systémový administrátor",
-        personalBalance: "999,999,999 ILD",
-        personalBlock: "Blokace: 0 ILD",
-        teamBalance: "∞ ILD",
-        teamBlock: "Blokace: 0 ILD",
+        personalBalance: 999999999,
+        personalBlock: 0,
+        teamBalance: "∞",
+        teamBlock: 0,
         password: "admin123",
         isAdmin: true
       },
@@ -378,10 +623,10 @@
         userName: "Uživatel 1",
         team: "Vláda SFRI",
         teamMembers: "Člen A, Člen B, Člen C",
-        personalBalance: "1,000,000 ILD",
-        personalBlock: "Blokace: 0 ILD",
-        teamBalance: "∞ ILD",
-        teamBlock: "Blokace: 0 ILD",
+        personalBalance: 1000000,
+        personalBlock: 0,
+        teamBalance: "∞",
+        teamBlock: 0,
         password: "demo123",
         isAdmin: false
       }
@@ -394,14 +639,37 @@
         title: "Vláda SFRI schválila nový rozpočet",
         text: "Vláda Socialistické Federativní Republiky IngLAND dnes schválila rozpočet na příští rok s důrazem na sociální programy a rozvoj infrastruktury.",
         date: new Date().toLocaleString('cs-CZ'),
-        author: "admin"
+        author: "admin",
+        attachment: null,
+        attachmentName: null
+      }
+    ];
+    
+    // TRANSAKCE
+    let transactions = JSON.parse(localStorage.getItem('sfriTransactions')) || [
+      {
+        id: 1,
+        title: "Platba za školní pomůcky",
+        description: "Nákup učebnic a pomůcek pro základní školy",
+        amount: 500000,
+        sender: "user1",
+        recipient: "Školní úřad",
+        date: new Date().toLocaleString('cs-CZ'),
+        status: "pending", // pending, approved, rejected
+        approvedBy: null,
+        approvedDate: null
       },
       {
         id: 2,
-        title: "Zahájen projekt modernizace železnic",
-        text: "Byl zahájen ambiciózní projekt na modernizaci železniční sítě, který zlepší spojení mezi všemi regiony SFRI.",
+        title: "Platba stavby silnice",
+        description: "Výstavba nové silnice mezi regiony",
+        amount: 2500000,
+        sender: "admin",
+        recipient: "Stavební společnost ABC",
         date: new Date(Date.now() - 86400000).toLocaleString('cs-CZ'),
-        author: "admin"
+        status: "approved",
+        approvedBy: "admin",
+        approvedDate: new Date(Date.now() - 43200000).toLocaleString('cs-CZ')
       }
     ];
     
@@ -447,16 +715,23 @@
         
         // ZOBRAZIT ADMIN TAB POKUD JE ADMIN
         const adminTabButton = document.getElementById('adminTabButton');
+        const transactionsTabButton = document.getElementById('transactionsTabButton');
         if (users[username].isAdmin) {
           adminTabButton.style.display = 'block';
+          transactionsTabButton.style.display = 'block';
         } else {
           adminTabButton.style.display = 'none';
+          transactionsTabButton.style.display = 'block'; // Transakce vidí všichni
         }
         
         resetLogoutTimer();
         loadNews();
+        loadTransactions();
         if (users[username].isAdmin) {
           loadAdminNews();
+          loadAccounts();
+          loadAdminTransactions();
+          populateRecipientSelect();
         }
         
         showStatus(`Vítejte, ${username}!`, 'success');
@@ -475,10 +750,10 @@
       document.getElementById('userName').textContent = user.userName;
       document.getElementById('userTeam').textContent = user.team;
       document.getElementById('userTeamMembers').textContent = user.teamMembers;
-      document.getElementById('personalBalance').textContent = user.personalBalance;
-      document.getElementById('personalBlock').textContent = user.personalBlock;
-      document.getElementById('teamBalance').textContent = user.teamBalance;
-      document.getElementById('teamBlock').textContent = user.teamBlock;
+      document.getElementById('personalBalance').textContent = user.personalBalance.toLocaleString() + " ILD";
+      document.getElementById('personalBlock').textContent = "Blokace: " + user.personalBlock + " ILD";
+      document.getElementById('teamBalance').textContent = user.teamBalance + " ILD";
+      document.getElementById('teamBlock').textContent = "Blokace: " + user.teamBlock + " ILD";
       
       const lastLogin = localStorage.getItem('lastLogin') || new Date().toLocaleString('cs-CZ');
       document.getElementById('lastLogin').textContent = lastLogin;
@@ -500,12 +775,44 @@
       
       document.getElementById(tabName + 'Tab').classList.add('active');
       
-      document.querySelector(`.tab[data-tab="${tabName}"]`)
-        .classList.add('active');
+      const tabElement = document.querySelector(`.tab[data-tab="${tabName}"]`);
+      if (tabElement) {
+        tabElement.classList.add('active');
+      }
       
-      if (tabName === 'admin') loadAdminNews();
+      if (tabName === 'admin') {
+        switchAdminTab('users');
+      } else if (tabName === 'transactions') {
+        loadTransactions();
+      }
     }
     
+    function switchAdminTab(tabName) {
+      // Skrýt všechny admin záložky
+      document.querySelectorAll('.admin-tab-content').forEach(tab => {
+        tab.style.display = 'none';
+      });
+      
+      // Deaktivovat všechny admin tabs
+      document.querySelectorAll('.tab[data-admin-tab]').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Zobrazit vybranou admin záložku
+      document.getElementById('admin' + tabName.charAt(0).toUpperCase() + tabName.slice(1) + 'Tab').style.display = 'block';
+      
+      // Aktivovat odpovídající tab
+      document.querySelector(`.tab[data-admin-tab="${tabName}"]`).classList.add('active');
+      
+      // Načíst data pokud je potřeba
+      if (tabName === 'users') {
+        loadAccounts();
+      } else if (tabName === 'transactions') {
+        loadAdminTransactions();
+      }
+    }
+    
+    // Načíst novinky
     function loadNews() {
       const container = document.getElementById('newsContainer');
       container.innerHTML = '';
@@ -515,54 +822,299 @@
         return;
       }
       
-      // SEŘADIT OD NEJNOVĚJŠÍ
       const sortedNews = [...news].sort((a, b) => new Date(b.date) - new Date(a.date));
       
       sortedNews.forEach(item => {
         const newsDiv = document.createElement('div');
         newsDiv.className = 'news-item';
+        
+        let attachmentHtml = '';
+        if (item.attachment && item.attachmentName) {
+          attachmentHtml = `
+            <div class="news-attachment">
+              <strong>📎 Příloha:</strong> 
+              <a href="${item.attachment}" download="${item.attachmentName}">${item.attachmentName}</a>
+            </div>
+          `;
+        }
+        
         newsDiv.innerHTML = `
           <div class="news-date"><strong>${item.date}</strong> | Autor: ${item.author}</div>
           <h3 class="news-title">${item.title}</h3>
           <div class="news-text">${item.text}</div>
+          ${attachmentHtml}
         `;
         container.appendChild(newsDiv);
       });
     }
     
-    function loadAdminNews() {
-      const container = document.getElementById('adminNewsList');
-      if (!container) {
-        console.error('Admin container neexistuje!');
-        return;
-      }
-      
+    // Načíst transakce pro uživatele
+    function loadTransactions() {
+      const container = document.getElementById('transactionsContainer');
       container.innerHTML = '';
       
-      if (news.length === 0) {
-        container.innerHTML = '<p>Žádné zprávy k zobrazení.</p>';
+      if (transactions.length === 0) {
+        container.innerHTML = '<p>Žádné transakce k zobrazení.</p>';
         return;
       }
       
-      // SEŘADIT OD NEJNOVĚJŠÍ
-      const sortedNews = [...news].sort((a, b) => new Date(b.date) - new Date(a.date));
+      const userTransactions = transactions.filter(t => 
+        t.sender === currentUser || t.recipient === users[currentUser]?.team
+      );
       
-      sortedNews.forEach(item => {
-        const newsDiv = document.createElement('div');
-        newsDiv.className = 'news-item';
-        newsDiv.innerHTML = `
-          <div class="news-date"><strong>${item.date}</strong> | ID: ${item.id}</div>
-          <h3 class="news-title">${item.title}</h3>
-          <div class="news-text">${item.text}</div>
-          <button onclick="deleteNews(${item.id})" 
-                  style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 10px;">
-            Smazat zprávu
-          </button>
+      if (userTransactions.length === 0) {
+        container.innerHTML = '<p>Nemáte žádné transakce.</p>';
+        return;
+      }
+      
+      const sortedTransactions = [...userTransactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      sortedTransactions.forEach(transaction => {
+        const transactionDiv = document.createElement('div');
+        transactionDiv.className = `transaction-item transaction-${transaction.status}`;
+        
+        let statusText = '';
+        let statusColor = '';
+        switch(transaction.status) {
+          case 'pending':
+            statusText = 'Čeká na schválení';
+            statusColor = '#ff9800';
+            break;
+          case 'approved':
+            statusText = 'Schváleno';
+            statusColor = '#4caf50';
+            break;
+          case 'rejected':
+            statusText = 'Zamítnuto';
+            statusColor = '#f44336';
+            break;
+        }
+        
+        transactionDiv.innerHTML = `
+          <div class="transaction-header">
+            <strong>${transaction.title}</strong>
+            <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span>
+          </div>
+          <div><strong>Popis:</strong> ${transaction.description}</div>
+          <div><strong>Částka:</strong> ${transaction.amount.toLocaleString()} ILD</div>
+          <div><strong>Příjemce:</strong> ${transaction.recipient}</div>
+          <div><strong>Datum:</strong> ${transaction.date}</div>
+          ${transaction.approvedBy ? `<div><strong>Schválil:</strong> ${transaction.approvedBy} (${transaction.approvedDate})</div>` : ''}
         `;
-        container.appendChild(newsDiv);
+        container.appendChild(transactionDiv);
       });
     }
     
+    // Načíst účty do selectu příjemců
+    function populateRecipientSelect() {
+      const select = document.getElementById('transactionRecipient');
+      select.innerHTML = '<option value="">Vyberte příjemce</option>';
+      
+      // Přidat týmy uživatelů
+      const teams = new Set();
+      Object.values(users).forEach(user => {
+        if (user.team && user.team !== "Administrace") {
+          teams.add(user.team);
+        }
+      });
+      
+      teams.forEach(team => {
+        const option = document.createElement('option');
+        option.value = team;
+        option.textContent = team;
+        select.appendChild(option);
+      });
+      
+      // Přidat pevné možnosti
+      const fixedOptions = [
+        "Školní úřad",
+        "Ministerstvo zdravotnictví",
+        "Dopravní podnik",
+        "Stavební společnost ABC",
+        "Energetická společnost"
+      ];
+      
+      fixedOptions.forEach(optionText => {
+        const option = document.createElement('option');
+        option.value = optionText;
+        option.textContent = optionText;
+        select.appendChild(option);
+      });
+    }
+    
+    // Zobrazit formulář pro novou transakci
+    function showNewTransactionForm() {
+      document.getElementById('newTransactionForm').style.display = 'block';
+    }
+    
+    function hideNewTransactionForm() {
+      document.getElementById('newTransactionForm').style.display = 'none';
+    }
+    
+    // Odeslat novou transakci
+    function submitTransaction() {
+      const title = document.getElementById('transactionTitle').value.trim();
+      const description = document.getElementById('transactionDescription').value.trim();
+      const amount = parseFloat(document.getElementById('transactionAmount').value);
+      const recipient = document.getElementById('transactionRecipient').value;
+      
+      if (!title || !description || !amount || amount <= 0 || !recipient) {
+        showStatus('Vyplňte všechna pole správně!', 'error');
+        return;
+      }
+      
+      const newId = transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1;
+      const newTransaction = {
+        id: newId,
+        title: title,
+        description: description,
+        amount: amount,
+        sender: currentUser,
+        recipient: recipient,
+        date: new Date().toLocaleString('cs-CZ'),
+        status: "pending",
+        approvedBy: null,
+        approvedDate: null
+      };
+      
+      transactions.push(newTransaction);
+      localStorage.setItem('sfriTransactions', JSON.stringify(transactions));
+      
+      // Vyčistit formulář
+      document.getElementById('transactionTitle').value = '';
+      document.getElementById('transactionDescription').value = '';
+      document.getElementById('transactionAmount').value = '';
+      document.getElementById('transactionRecipient').selectedIndex = 0;
+      
+      hideNewTransactionForm();
+      loadTransactions();
+      if (users[currentUser] && users[currentUser].isAdmin) {
+        loadAdminTransactions();
+      }
+      
+      showStatus('Transakce byla odeslána ke schválení!', 'success');
+    }
+    
+    // Filtrovat transakce
+    function filterTransactions() {
+      const filter = document.getElementById('transactionFilter').value;
+      // Implementace filtrování by byla podobná jako v admin části
+      loadTransactions(); // Prozatím jen znovu načíst
+    }
+    
+    // ADMIN FUNKCE
+    
+    // Vytvořit nový uživatelský účet
+    function createUser() {
+      const username = document.getElementById('newUsername').value.trim();
+      const password = document.getElementById('newPassword').value;
+      const fullName = document.getElementById('newFullName').value.trim();
+      const team = document.getElementById('newTeam').value.trim();
+      const teamMembers = document.getElementById('newTeamMembers').value.trim();
+      const balance = parseFloat(document.getElementById('newBalance').value) || 0;
+      const isAdmin = document.getElementById('newIsAdmin').value === 'true';
+      
+      if (!username || !password || !fullName) {
+        showStatus('Vyplňte povinná pole!', 'error');
+        return;
+      }
+      
+      if (users[username]) {
+        showStatus('Uživatelské jméno již existuje!', 'error');
+        return;
+      }
+      
+      users[username] = {
+        fullName: fullName,
+        userName: username,
+        team: team || "Vláda SFRI",
+        teamMembers: teamMembers || "Členové týmu",
+        personalBalance: balance,
+        personalBlock: 0,
+        teamBalance: "∞",
+        teamBlock: 0,
+        password: password,
+        isAdmin: isAdmin
+      };
+      
+      // Uložit uživatele do localStorage
+      localStorage.setItem('sfriUsers', JSON.stringify(users));
+      
+      // Vyčistit formulář
+      document.getElementById('newUsername').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('newFullName').value = '';
+      document.getElementById('newTeam').value = '';
+      document.getElementById('newTeamMembers').value = '';
+      document.getElementById('newBalance').value = '';
+      document.getElementById('newIsAdmin').selectedIndex = 0;
+      
+      loadAccounts();
+      populateRecipientSelect();
+      showStatus('Uživatelský účet byl vytvořen!', 'success');
+    }
+    
+    // Načíst seznam účtů
+    function loadAccounts() {
+      const container = document.getElementById('accountsList');
+      container.innerHTML = '';
+      
+      Object.keys(users).forEach(username => {
+        const user = users[username];
+        const accountDiv = document.createElement('div');
+        accountDiv.className = 'account-item';
+        
+        accountDiv.innerHTML = `
+          <div class="account-info">
+            <strong>${user.fullName}</strong><br>
+            <small>Uživatel: ${username} | Tým: ${user.team} | Admin: ${user.isAdmin ? 'Ano' : 'Ne'}</small><br>
+            <small>Zůstatek: ${user.personalBalance.toLocaleString()} ILD</small>
+          </div>
+          <div class="account-actions">
+            ${username !== 'admin' ? `
+              <button onclick="editUser('${username}')" style="background: #2196f3; padding: 5px 10px;">Upravit</button>
+              <button onclick="deleteUser('${username}')" style="background: #f44336; padding: 5px 10px;">Smazat</button>
+            ` : '<small>Systemový účet</small>'}
+          </div>
+        `;
+        container.appendChild(accountDiv);
+      });
+    }
+    
+    // Upravit uživatele
+    function editUser(username) {
+      const user = users[username];
+      if (!user) return;
+      
+      const newBalance = prompt(`Nový zůstatek pro ${username}:`, user.personalBalance);
+      if (newBalance !== null) {
+        const balance = parseFloat(newBalance);
+        if (!isNaN(balance)) {
+          user.personalBalance = balance;
+          localStorage.setItem('sfriUsers', JSON.stringify(users));
+          loadAccounts();
+          showStatus('Zůstatek byl aktualizován!', 'success');
+        }
+      }
+    }
+    
+    // Smazat uživatele
+    function deleteUser(username) {
+      if (username === 'admin' || username === currentUser) {
+        showStatus('Nelze smazat tento účet!', 'error');
+        return;
+      }
+      
+      if (confirm(`Opravdu chcete smazat uživatele ${username}?`)) {
+        delete users[username];
+        localStorage.setItem('sfriUsers', JSON.stringify(users));
+        loadAccounts();
+        populateRecipientSelect();
+        showStatus('Uživatel byl smazán!', 'success');
+      }
+    }
+    
+    // Nahrát novou zprávu s přílohou
     function uploadNews() {
       if (!currentUser || !users[currentUser] || !users[currentUser].isAdmin) {
         showStatus('Pouze administrátor může publikovat zprávy!', 'error');
@@ -571,37 +1123,96 @@
       
       const title = document.getElementById('newsTitle').value.trim();
       const text = document.getElementById('newsText').value.trim();
+      const attachmentInput = document.getElementById('newsAttachment');
       
       if (!title || !text) {
         showStatus('Vyplňte nadpis i text zprávy!', 'error');
         return;
       }
       
-      // VYTVOŘIT NOVOU ZPRÁVU
       const newId = news.length > 0 ? Math.max(...news.map(n => n.id)) + 1 : 1;
       const newItem = {
         id: newId,
         title: title,
         text: text,
         date: new Date().toLocaleString('cs-CZ'),
-        author: currentUser
+        author: currentUser,
+        attachment: null,
+        attachmentName: null
       };
       
-      // PŘIDAT ZPRÁVU
+      // Zpracovat přílohu pokud je vybrána
+      if (attachmentInput.files && attachmentInput.files[0]) {
+        const file = attachmentInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          newItem.attachment = e.target.result;
+          newItem.attachmentName = file.name;
+          addNewsItem(newItem);
+        };
+        
+        reader.readAsDataURL(file);
+      } else {
+        addNewsItem(newItem);
+      }
+    }
+    
+    function addNewsItem(newItem) {
       news.push(newItem);
       localStorage.setItem('sfriNews', JSON.stringify(news));
       
-      // VYČISTIT FORMULÁŘ
+      // Vyčistit formulář
       document.getElementById('newsTitle').value = '';
       document.getElementById('newsText').value = '';
+      document.getElementById('newsAttachment').value = '';
       
-      // PŘENAČÍST ZPRÁVY
+      // Přenačíst zprávy
       loadNews();
       loadAdminNews();
       
       showStatus('Zpráva byla úspěšně publikována!', 'success');
     }
     
+    // Načíst zprávy pro administraci
+    function loadAdminNews() {
+      const container = document.getElementById('adminNewsList');
+      container.innerHTML = '';
+      
+      if (news.length === 0) {
+        container.innerHTML = '<p>Žádné zprávy k zobrazení.</p>';
+        return;
+      }
+      
+      const sortedNews = [...news].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      sortedNews.forEach(item => {
+        const newsDiv = document.createElement('div');
+        newsDiv.className = 'news-item';
+        
+        let attachmentHtml = '';
+        if (item.attachment && item.attachmentName) {
+          attachmentHtml = `
+            <div class="news-attachment">
+              <strong>📎 Příloha:</strong> ${item.attachmentName}
+            </div>
+          `;
+        }
+        
+        newsDiv.innerHTML = `
+          <div class="news-date"><strong>${item.date}</strong> | ID: ${item.id} | Autor: ${item.author}</div>
+          <h3 class="news-title">${item.title}</h3>
+          <div class="news-text">${item.text}</div>
+          ${attachmentHtml}
+          <div style="margin-top: 10px;">
+            <button onclick="deleteNews(${item.id})" style="background: #f44336; padding: 5px 10px;">Smazat zprávu</button>
+          </div>
+        `;
+        container.appendChild(newsDiv);
+      });
+    }
+    
+    // Smazat zprávu
     function deleteNews(id) {
       if (!confirm('Opravdu chcete smazat tuto zprávu?')) {
         return;
@@ -615,6 +1226,114 @@
       loadAdminNews();
       
       showStatus(`Zpráva byla smazána. (${originalLength} → ${news.length} zpráv)`, 'success');
+    }
+    
+    // Načíst transakce pro administraci
+    function loadAdminTransactions() {
+      const container = document.getElementById('adminTransactionsList');
+      container.innerHTML = '';
+      
+      if (transactions.length === 0) {
+        container.innerHTML = '<p>Žádné transakce k zobrazení.</p>';
+        return;
+      }
+      
+      const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      sortedTransactions.forEach(transaction => {
+        const transactionDiv = document.createElement('div');
+        transactionDiv.className = `transaction-item transaction-${transaction.status}`;
+        
+        let statusText = '';
+        let statusColor = '';
+        switch(transaction.status) {
+          case 'pending':
+            statusText = 'Čeká na schválení';
+            statusColor = '#ff9800';
+            break;
+          case 'approved':
+            statusText = 'Schváleno';
+            statusColor = '#4caf50';
+            break;
+          case 'rejected':
+            statusText = 'Zamítnuto';
+            statusColor = '#f44336';
+            break;
+        }
+        
+        let actionButtons = '';
+        if (transaction.status === 'pending') {
+          actionButtons = `
+            <div class="transaction-actions">
+              <button class="btn-approve" onclick="approveTransaction(${transaction.id})">Schválit</button>
+              <button class="btn-reject" onclick="rejectTransaction(${transaction.id})">Zamítnout</button>
+            </div>
+          `;
+        }
+        
+        transactionDiv.innerHTML = `
+          <div class="transaction-header">
+            <strong>${transaction.title}</strong>
+            <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span>
+          </div>
+          <div><strong>Popis:</strong> ${transaction.description}</div>
+          <div><strong>Částka:</strong> ${transaction.amount.toLocaleString()} ILD</div>
+          <div><strong>Odesílatel:</strong> ${transaction.sender}</div>
+          <div><strong>Příjemce:</strong> ${transaction.recipient}</div>
+          <div><strong>Datum:</strong> ${transaction.date}</div>
+          ${transaction.approvedBy ? `<div><strong>Schválil:</strong> ${transaction.approvedBy} (${transaction.approvedDate})</div>` : ''}
+          ${actionButtons}
+        `;
+        container.appendChild(transactionDiv);
+      });
+    }
+    
+    // Schválit transakci
+    function approveTransaction(id) {
+      const transaction = transactions.find(t => t.id === id);
+      if (!transaction) return;
+      
+      transaction.status = 'approved';
+      transaction.approvedBy = currentUser;
+      transaction.approvedDate = new Date().toLocaleString('cs-CZ');
+      
+      // Aktualizovat zůstatek odesílatele
+      if (users[transaction.sender]) {
+        users[transaction.sender].personalBalance -= transaction.amount;
+      }
+      
+      localStorage.setItem('sfriTransactions', JSON.stringify(transactions));
+      localStorage.setItem('sfriUsers', JSON.stringify(users));
+      
+      loadTransactions();
+      loadAdminTransactions();
+      loadAccounts();
+      
+      showStatus('Transakce byla schválena!', 'success');
+    }
+    
+    // Zamítnout transakci
+    function rejectTransaction(id) {
+      const transaction = transactions.find(t => t.id === id);
+      if (!transaction) return;
+      
+      transaction.status = 'rejected';
+      transaction.approvedBy = currentUser;
+      transaction.approvedDate = new Date().toLocaleString('cs-CZ');
+      
+      localStorage.setItem('sfriTransactions', JSON.stringify(transactions));
+      
+      loadTransactions();
+      loadAdminTransactions();
+      
+      showStatus('Transakce byla zamítnuta!', 'success');
+    }
+    
+    // Filtrovat transakce v administraci
+    function filterAdminTransactions() {
+      const filter = document.getElementById('adminTransactionFilter').value;
+      // Implementace filtrování
+      loadAdminTransactions(); // Prozatím jen znovu načíst
     }
     
     function logout() {
@@ -676,6 +1395,17 @@
     
     // AUTO-PŘIHLÁŠENÍ PŘI NAČTENÍ STRÁNKY
     window.onload = function() {
+      // Načíst uživatele z localStorage
+      const savedUsers = localStorage.getItem('sfriUsers');
+      if (savedUsers) {
+        try {
+          const parsedUsers = JSON.parse(savedUsers);
+          Object.assign(users, parsedUsers);
+        } catch (e) {
+          console.error('Chyba při načítání uživatelů:', e);
+        }
+      }
+      
       const savedUser = localStorage.getItem('loggedInUser');
       
       if (savedUser && users[savedUser]) {
@@ -687,16 +1417,23 @@
         
         // ZOBRAZIT ADMIN TAB POKUD JE ADMIN
         const adminTabButton = document.getElementById('adminTabButton');
+        const transactionsTabButton = document.getElementById('transactionsTabButton');
         if (users[savedUser].isAdmin) {
           adminTabButton.style.display = 'block';
+          transactionsTabButton.style.display = 'block';
         } else {
           adminTabButton.style.display = 'none';
+          transactionsTabButton.style.display = 'block';
         }
         
         resetLogoutTimer();
         loadNews();
+        loadTransactions();
         if (users[savedUser].isAdmin) {
           loadAdminNews();
+          loadAccounts();
+          loadAdminTransactions();
+          populateRecipientSelect();
         }
       }
       
@@ -708,6 +1445,17 @@
         } catch (e) {
           console.error('Chyba při načítání novinek:', e);
           news = [];
+        }
+      }
+      
+      // NAČÍST TRANSAKCE
+      const savedTransactions = localStorage.getItem('sfriTransactions');
+      if (savedTransactions) {
+        try {
+          transactions = JSON.parse(savedTransactions);
+        } catch (e) {
+          console.error('Chyba při načítání transakcí:', e);
+          transactions = [];
         }
       }
     };
