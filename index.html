@@ -37,6 +37,10 @@
       cursor: pointer; 
       margin-right: 5px; 
       border-radius: 4px 4px 0 0;
+      transition: background-color 0.3s;
+    }
+    .tab:hover { 
+      background: #d0d0d0; 
     }
     .tab.active { 
       background: #c00; 
@@ -74,9 +78,22 @@
     .lista button, .lista input[type="submit"] {
       padding: 6px 12px;
       font-size: 14px;
+      cursor: pointer;
     }
     
-    .debug-info { background: #ffeb3b; padding: 5px; margin: 5px; border-radius: 3px; display: none; }
+    .debug-info { 
+      background: #ffeb3b; 
+      padding: 10px; 
+      margin: 10px; 
+      border-radius: 5px; 
+      display: none;
+      border: 1px solid #ff9800;
+    }
+    
+    /* OPRAVA PRO ADMIN TAB */
+    #adminTabContent {
+      min-height: 400px;
+    }
   </style>  
 </head>  
 <body role="application">
@@ -132,6 +149,7 @@
     <div id="debugInfo" class="debug-info">
       <strong>Debug info:</strong>
       <div id="debugContent"></div>
+      <button onclick="testAdmin()" style="margin-top: 10px;">Testovat admin funkce</button>
     </div>
     
     <!-- NAVIGAČNÍ ZÁLOŽKY -->
@@ -187,28 +205,30 @@
     <div id="adminTabContent" class="tab-content">
       <div class="strana">
         <div class="menu-main">
-          <div class="nazev_strany">Administrace portálu vlády</div>
+          <div class="nazev_strany" id="adminPageTitle">Administrace portálu vlády</div>
           <div id="adminUpload">
             <h3>Nahrát novou zprávu s fotkou</h3>
             <form id="newsUploadForm">
               <div>
                 <label for="newsTitle">Nadpis zprávy:</label><br>
-                <input type="text" id="newsTitle" style="width: 300px; margin-bottom: 10px;">
+                <input type="text" id="newsTitle" style="width: 300px; margin-bottom: 10px;" placeholder="Zadejte nadpis zprávy">
               </div>
               <div>
                 <label for="newsText">Text zprávy:</label><br>
-                <textarea id="newsText" rows="5" style="width: 100%; max-width: 500px; margin-bottom: 10px;"></textarea>
+                <textarea id="newsText" rows="5" style="width: 100%; max-width: 500px; margin-bottom: 10px;" placeholder="Zadejte text zprávy"></textarea>
               </div>
               <div>
                 <label for="newsImage">Vybrat fotku:</label><br>
                 <input type="file" id="newsImage" accept="image/*" style="margin-bottom: 10px;">
               </div>
-              <button type="button" onclick="uploadNews()">Nahrát zprávu</button>
+              <button type="button" onclick="uploadNews()" id="uploadBtn">Nahrát zprávu</button>
+              <span id="uploadStatus" style="margin-left: 10px; color: green;"></span>
             </form>
             
             <h3 style="margin-top: 30px;">Spravovat existující zprávy</h3>
             <div id="adminNewsList">
               <!-- Seznam zpráv pro administraci -->
+              <p>Načítám zprávy...</p>
             </div>
           </div>
         </div>
@@ -220,7 +240,6 @@
   <script>  
     // Databáze uživatelů
     const users = {
-      // Ukázkový uživatel 1
       "user1": {
         fullName: "Člen vlády SFRI",
         userName: "Uživatel 1",
@@ -233,20 +252,6 @@
         password: "demo123",
         isAdmin: false
       },
-      // Ukázkový uživatel 2
-      "user2": {
-        fullName: "Další člen vlády",
-        userName: "Uživatel 2",
-        team: "Vláda SFRI",
-        teamMembers: "Člen A, Člen B, Člen C",
-        personalBalance: "1500000 ILD",
-        personalBlock: "Blokace: 0 ILD",
-        teamBalance: "∞ ILD",
-        teamBlock: "Blokace: 0 ILD",
-        password: "demo456",
-        isAdmin: false
-      },
-      // Administrátor
       "admin": {
         fullName: "Administrátor portálu",
         userName: "admin",
@@ -270,19 +275,11 @@
         image: null,
         date: new Date().toLocaleString('cs-CZ'),
         author: "admin"
-      },
-      {
-        id: 2,
-        title: "Slavnostní otevření nové školy",
-        text: "Dnes byla slavnostně otevřena nová škola v hlavním městě. Moderní zařízení bude sloužit studentům z celé republiky.",
-        image: null,
-        date: new Date(Date.now() - 86400000).toLocaleString('cs-CZ'),
-        author: "admin"
       }
     ];
     
     let currentUser = null;
-    let logoutTime = 600; // 10 minut v sekundách
+    let logoutTime = 600;
     let timerInterval;
     
     function showDebug() {
@@ -290,14 +287,30 @@
       const contentDiv = document.getElementById('debugContent');
       
       contentDiv.innerHTML = `
-        <div>Aktuální uživatel: ${currentUser || 'žádný'}</div>
-        <div>Je admin: ${currentUser ? users[currentUser]?.isAdmin : 'ne'}</div>
-        <div>Počet novinek: ${news.length}</div>
-        <div>Čas odhlášení: ${logoutTime}s</div>
-        <div>Admin tab zobrazen: ${document.getElementById('adminTab').style.display}</div>
+        <div><strong>Aktuální uživatel:</strong> ${currentUser || 'žádný'}</div>
+        <div><strong>Je admin:</strong> ${currentUser ? (users[currentUser]?.isAdmin ? 'ANO' : 'NE') : 'NE'}</div>
+        <div><strong>Počet novinek:</strong> ${news.length}</div>
+        <div><strong>Čas odhlášení:</strong> ${logoutTime}s</div>
+        <div><strong>Admin tab zobrazen:</strong> ${document.getElementById('adminTab').style.display}</div>
+        <div><strong>Admin tab obsah viditelný:</strong> ${document.getElementById('adminTabContent').style.display}</div>
+        <div><strong>Aktivní záložka:</strong> ${document.querySelector('.tab.active')?.textContent}</div>
       `;
       
       debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function testAdmin() {
+      console.log("=== TEST ADMIN FUNKCÍ ===");
+      console.log("1. Aktuální uživatel:", currentUser);
+      console.log("2. Je admin?", users[currentUser]?.isAdmin);
+      console.log("3. Admin tab element:", document.getElementById('adminTab'));
+      console.log("4. Admin tab style.display:", document.getElementById('adminTab').style.display);
+      console.log("5. Admin content element:", document.getElementById('adminTabContent'));
+      console.log("6. Všechny tabs:", document.querySelectorAll('.tab'));
+      console.log("7. Aktivní tab:", document.querySelector('.tab.active'));
+      
+      // Test přepnutí na admin
+      switchToTab('admin');
     }
     
     function checkLogin() {  
@@ -316,8 +329,10 @@
         const adminTab = document.getElementById('adminTab');
         if(users[user].isAdmin) {
           adminTab.style.display = 'block';
+          console.log("Admin tab zobrazen pro uživatele:", user);
         } else {
           adminTab.style.display = 'none';
+          console.log("Admin tab skryt pro běžného uživatele:", user);
         }
         
         resetLogoutTimer();  
@@ -326,7 +341,7 @@
           loadAdminNews();
         }
         
-        console.log("Přihlášen uživatel:", user, "Is admin:", users[user].isAdmin);
+        alert(`Přihlášeno jako ${user}${users[user].isAdmin ? ' (ADMIN)' : ''}`);
       } else {  
         alert("Neplatné přihlašovací údaje!");  
       }  
@@ -348,15 +363,24 @@
     }  
     
     function switchToTab(tabName) {
-      console.log("Přepínám na záložku:", tabName);
+      console.log(`Přepínám na záložku: ${tabName}, uživatel: ${currentUser}, isAdmin: ${users[currentUser]?.isAdmin}`);
+      
+      // Kontrola přístupu pro admin
+      if (tabName === 'admin' && (!currentUser || !users[currentUser] || !users[currentUser].isAdmin)) {
+        alert('Přístup zamítnut! Nemáte administrátorská oprávnění.');
+        return;
+      }
       
       // Skrýt všechny záložky
-      document.querySelectorAll('.tab-content').forEach(tab => {
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(tab => {
         tab.classList.remove('active');
+        console.log(`Skrytí: ${tab.id}`);
       });
       
       // Deaktivovat všechny taby
-      document.querySelectorAll('.tab').forEach(tab => {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
         tab.classList.remove('active');
       });
       
@@ -364,21 +388,21 @@
       const targetTab = document.getElementById(tabName + 'Tab');
       if (targetTab) {
         targetTab.classList.add('active');
+        console.log(`Zobrazeno: ${targetTab.id}`);
         
         // Aktivovat odpovídající tab
-        document.querySelectorAll('.tab').forEach(tab => {
-          if (tab.textContent.includes(
-            tabName === 'personal' ? 'Osobní' : 
-            tabName === 'news' ? 'Portál' : 
-            'Administrace')
-          ) {
+        tabs.forEach(tab => {
+          if (tab.textContent.trim() === (tabName === 'personal' ? 'Osobní informace' : 
+                                         tabName === 'news' ? 'Portál vlády' : 
+                                         'Administrace')) {
             tab.classList.add('active');
           }
         });
         
         // Pokud přepínáme na administraci, načtěme data
-        if(tabName === 'admin' && currentUser && users[currentUser] && users[currentUser].isAdmin) {
+        if(tabName === 'admin') {
           loadAdminNews();
+          document.getElementById('adminPageTitle').textContent = `Administrace - Přihlášen jako ${currentUser}`;
         }
       } else {
         console.error("Záložka neexistuje:", tabName + 'Tab');
@@ -412,6 +436,11 @@
     
     function loadAdminNews() {
       const container = document.getElementById('adminNewsList');
+      if (!container) {
+        console.error("Container adminNewsList nebyl nalezen!");
+        return;
+      }
+      
       container.innerHTML = '';
       
       if(news.length === 0) {
@@ -436,6 +465,8 @@
         `;
         container.appendChild(newsDiv);
       });
+      
+      console.log(`Načteno ${sortedNews.length} zpráv do administrace`);
     }
     
     function uploadNews() {
@@ -447,6 +478,7 @@
       const title = document.getElementById('newsTitle').value.trim();
       const text = document.getElementById('newsText').value.trim();
       const imageInput = document.getElementById('newsImage');
+      const statusSpan = document.getElementById('uploadStatus');
       
       if(!title || !text) {
         alert('Vyplňte nadpis a text zprávy!');
@@ -474,6 +506,7 @@
           addNewsItem(newItem);
         };
         reader.readAsDataURL(imageInput.files[0]);
+        statusSpan.textContent = 'Nahrávám obrázek...';
       } else {
         addNewsItem(newItem);
       }
@@ -487,23 +520,29 @@
       document.getElementById('newsTitle').value = '';
       document.getElementById('newsText').value = '';
       document.getElementById('newsImage').value = '';
+      document.getElementById('uploadStatus').textContent = 'Zpráva nahrána!';
       
       // Přenačíst zprávy
       loadNews();
       loadAdminNews();
       
-      alert('Zpráva byla úspěšně nahrána!');
+      setTimeout(() => {
+        document.getElementById('uploadStatus').textContent = '';
+      }, 3000);
+      
+      console.log('Nová zpráva přidána:', newItem);
     }
     
     function deleteNews(id) {
       if(!confirm('Opravdu chcete smazat tuto zprávu?')) return;
       
+      const originalLength = news.length;
       news = news.filter(item => item.id !== id);
       localStorage.setItem('sfriNews', JSON.stringify(news));
       
       loadNews();
       loadAdminNews();
-      alert('Zpráva byla smazána.');
+      alert(`Zpráva byla smazána. (${originalLength} → ${news.length} zpráv)`);
     }
     
     function logout() {  
@@ -520,7 +559,7 @@
     }  
     
     function resetLogoutTimer() {
-      logoutTime = 600; // Reset na 10 minut
+      logoutTime = 600;
       clearInterval(timerInterval);
       updateLogoutTimer();
       
@@ -575,6 +614,7 @@
         const adminTab = document.getElementById('adminTab');
         if(users[loggedUser].isAdmin) {
           adminTab.style.display = 'block';
+          console.log("Auto-přihlášení jako ADMIN:", loggedUser);
         } else {
           adminTab.style.display = 'none';
         }
@@ -584,8 +624,6 @@
         if(users[loggedUser].isAdmin) {
           loadAdminNews();
         }
-        
-        console.log("Automaticky přihlášen:", loggedUser, "Is admin:", users[loggedUser].isAdmin);
       }
       
       // Načíst novinky z localStorage
@@ -598,6 +636,22 @@
           news = [];
         }
       }
+      
+      // Přidat event listenery pro tabs
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabName = this.textContent.trim();
+          let target;
+          
+          if (tabName === 'Osobní informace') target = 'personal';
+          else if (tabName === 'Portál vlády') target = 'news';
+          else if (tabName === 'Administrace') target = 'admin';
+          
+          if (target) {
+            switchToTab(target);
+          }
+        });
+      });
     }  
     
   </script>  
