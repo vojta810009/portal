@@ -277,11 +277,7 @@
       <input type="password" id="password" placeholder="Heslo">
       <button onclick="checkLogin()">Přihlásit se</button>
       
-      <div style="margin-top: 20px; font-size: 0.9em; color: #666;">
-        <strong>Testovací účty:</strong><br>
-        • admin / admin123 (administrátor)<br>
-        • user1 / demo123 (běžný uživatel)
-      </div>
+      <!-- ODSTRANĚN TEXT S HESLY -->
     </div>
   </div>
   
@@ -294,6 +290,7 @@
         <div>Odhlášení za: <strong id="logoutTimer">--:--</strong></div>
       </div>
       <div class="top-bar-buttons">
+        <button onclick="switchToTab('news')">Portál vlády</button>
         <button onclick="logout()">Odhlášení</button>
       </div>
     </div>
@@ -416,7 +413,8 @@
     
     // PROMĚNNÉ
     let currentUser = null;
-    let logoutTime = 600; // 10 minut
+    let logoutTime = 600;
+    let logoutTimerInterval = null;
     
     // FUNKCE
     function showStatus(message, type = 'success') {
@@ -453,7 +451,7 @@
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('portalContent').style.display = 'block';
         
-        // Zobrazit admin tab pokud je uživatel admin
+        // ZOBRAZIT ADMIN TAB POKUD JE ADMIN
         const adminTab = document.getElementById('adminTab');
         if (users[username].isAdmin) {
           adminTab.style.display = 'block';
@@ -493,42 +491,46 @@
     }
     
     function switchToTab(tabName) {
-      console.log('Přepínám na:', tabName);
+      console.log('Přepínám na záložku:', tabName);
       
-      // Kontrola pro admin
-      if (tabName === 'admin' && (!currentUser || !users[currentUser] || !users[currentUser].isAdmin)) {
-        showStatus('Nemáte oprávnění pro přístup do administrace!', 'error');
-        return;
+      // KONTROLA PRO ADMINISTRACI
+      if (tabName === 'admin') {
+        if (!currentUser || !users[currentUser] || !users[currentUser].isAdmin) {
+          showStatus('Přístup zamítnut! Nemáte administrátorská oprávnění.', 'error');
+          return;
+        }
       }
       
-      // Skrýt všechny záložky
-      document.querySelectorAll('.tab-content').forEach(tab => {
+      // SKRÝT VŠECHNY ZÁLOŽKY
+      const allTabs = document.querySelectorAll('.tab-content');
+      allTabs.forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Deaktivovat všechny taby
-      document.querySelectorAll('.tab').forEach(tab => {
+      // DEAKTIVOVAT VŠECHNY TABS
+      const allTabButtons = document.querySelectorAll('.tab');
+      allTabButtons.forEach(tab => {
         tab.classList.remove('active');
       });
       
-      // Aktivovat vybranou záložku
+      // ZOBRAZIT VYBRANOU ZÁLOŽKU
       const targetTab = document.getElementById(tabName + 'Tab');
       if (targetTab) {
         targetTab.classList.add('active');
         
-        // Aktivovat odpovídající tab
-        document.querySelectorAll('.tab').forEach(tab => {
-          if (tab.textContent.includes(
-            tabName === 'personal' ? 'Osobní' : 
-            tabName === 'news' ? 'Portál' : 
-            'Administrace'
-          )) {
+        // AKTIVOVAT TLAČÍTKO ZÁLOŽKY
+        allTabButtons.forEach(tab => {
+          if (tab.textContent.trim() === 'Osobní informace' && tabName === 'personal') {
+            tab.classList.add('active');
+          } else if (tab.textContent.trim() === 'Portál vlády' && tabName === 'news') {
+            tab.classList.add('active');
+          } else if (tab.textContent.trim() === 'Administrace' && tabName === 'admin') {
             tab.classList.add('active');
           }
         });
         
-        // Načíst data pro admin
-        if (tabName === 'admin') {
+        // NAČÍST DATA PRO ADMINISTRACI
+        if (tabName === 'admin' && users[currentUser] && users[currentUser].isAdmin) {
           loadAdminNews();
         }
       }
@@ -543,7 +545,7 @@
         return;
       }
       
-      // Seřadit od nejnovější
+      // SEŘADIT OD NEJNOVĚJŠÍ
       const sortedNews = [...news].sort((a, b) => new Date(b.date) - new Date(a.date));
       
       sortedNews.forEach(item => {
@@ -560,6 +562,11 @@
     
     function loadAdminNews() {
       const container = document.getElementById('adminNewsList');
+      if (!container) {
+        console.error('Admin container neexistuje!');
+        return;
+      }
+      
       container.innerHTML = '';
       
       if (news.length === 0) {
@@ -567,7 +574,7 @@
         return;
       }
       
-      // Seřadit od nejnovější
+      // SEŘADIT OD NEJNOVĚJŠÍ
       const sortedNews = [...news].sort((a, b) => new Date(b.date) - new Date(a.date));
       
       sortedNews.forEach(item => {
@@ -577,7 +584,7 @@
           <div class="news-date"><strong>${item.date}</strong> | ID: ${item.id}</div>
           <h3 class="news-title">${item.title}</h3>
           <div class="news-text">${item.text}</div>
-          <button class="delete-btn" onclick="deleteNews(${item.id})" 
+          <button onclick="deleteNews(${item.id})" 
                   style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 10px;">
             Smazat zprávu
           </button>
@@ -600,7 +607,7 @@
         return;
       }
       
-      // Vytvořit novou zprávu
+      // VYTVOŘIT NOVOU ZPRÁVU
       const newId = news.length > 0 ? Math.max(...news.map(n => n.id)) + 1 : 1;
       const newItem = {
         id: newId,
@@ -610,24 +617,19 @@
         author: currentUser
       };
       
-      // Přidat zprávu
+      // PŘIDAT ZPRÁVU
       news.push(newItem);
       localStorage.setItem('sfriNews', JSON.stringify(news));
       
-      // Vyčistit formulář
+      // VYČISTIT FORMULÁŘ
       document.getElementById('newsTitle').value = '';
       document.getElementById('newsText').value = '';
       
-      // Přenačíst zprávy
+      // PŘENAČÍST ZPRÁVY
       loadNews();
       loadAdminNews();
       
       showStatus('Zpráva byla úspěšně publikována!', 'success');
-      
-      // Přepnout na záložku novinek
-      setTimeout(() => {
-        switchToTab('news');
-      }, 1000);
     }
     
     function deleteNews(id) {
@@ -656,16 +658,20 @@
       document.getElementById('password').value = '';
       document.getElementById('loginStatus').style.display = 'none';
       
-      clearInterval(window.logoutTimerInterval);
+      if (logoutTimerInterval) {
+        clearInterval(logoutTimerInterval);
+      }
       document.getElementById('logoutTimer').textContent = '--:--';
     }
     
     function resetLogoutTimer() {
       logoutTime = 600;
-      clearInterval(window.logoutTimerInterval);
+      if (logoutTimerInterval) {
+        clearInterval(logoutTimerInterval);
+      }
       updateLogoutTimer();
       
-      window.logoutTimerInterval = setInterval(() => {
+      logoutTimerInterval = setInterval(() => {
         logoutTime--;
         updateLogoutTimer();
         
@@ -683,7 +689,7 @@
         `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
     
-    // ENTER pro přihlášení
+    // ENTER PRO PŘIHLÁŠENÍ
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('password').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -698,7 +704,7 @@
       });
     });
     
-    // AUTO-PŘIHLÁŠENÍ
+    // AUTO-PŘIHLÁŠENÍ PŘI NAČTENÍ STRÁNKY
     window.onload = function() {
       const savedUser = localStorage.getItem('loggedInUser');
       
@@ -709,7 +715,7 @@
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('portalContent').style.display = 'block';
         
-        // Zobrazit admin tab pokud je uživatel admin
+        // ZOBRAZIT ADMIN TAB POKUD JE ADMIN
         const adminTab = document.getElementById('adminTab');
         if (users[savedUser].isAdmin) {
           adminTab.style.display = 'block';
@@ -724,7 +730,7 @@
         }
       }
       
-      // Načíst novinky
+      // NAČÍST NOVINKY
       const savedNews = localStorage.getItem('sfriNews');
       if (savedNews) {
         try {
